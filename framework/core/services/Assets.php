@@ -6,7 +6,7 @@ use \beaba\core;
  * License. See README.MD for details.
  * @author Ioan CHIRIAC
  */
-class Assets extends core\Service implements core\IService {
+class Assets extends core\Service implements core\IAssets {
     protected $packages = array();
     protected $config;        
     /**

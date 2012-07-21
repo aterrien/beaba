@@ -11,6 +11,8 @@ class index extends \beaba\core\Controller {
      * @param array $args 
      */
     public function index( array $args ) {
-        
+        $this->app->getService('assets')->attach('bootstrap');
+        $this->app->getService('view')->setLayout('layout.html');
+        $this->app->getService('view')->setTemplate('default.html');
     }
 }

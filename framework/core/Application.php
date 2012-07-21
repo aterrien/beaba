@@ -35,7 +35,28 @@ class Application {
             $this->instances[ $name ] = new $this->services[ $name ]( $this );
         }
         return $this->instances[ $name ];
-    }    
+    }   
+    /**
+     * Gets the asset manager
+     * @return IAssets
+     */
+    public function getAssets() {
+        return $this->getService('assets');
+    }
+    /**
+     * Gets the response handler
+     * @return IResponse
+     */
+    public function getResponse() {
+        return $this->getService('response');
+    }
+    /**
+     * Gets the view manager
+     * @return IView
+     */
+    public function getView() {
+        return $this->getService('view');
+    }
     /**
      * Execute the specified action controller 
      * @param string $controller
@@ -76,8 +97,6 @@ class Application {
         }
     }
 }
-
-
 /**
  * The service interface
  */
@@ -88,7 +107,46 @@ interface IService {
      */
     function getApplication();
 }
-
+/**
+ * The assets manager structure
+ */
+interface IAssets extends IService {
+    /**
+     * Check if the specified package is defined
+     * @param string $package 
+     * @return boolean
+     */    
+    public function hasConfig( $package );
+    /**
+     * Gets the specified package configuration
+     * @param string $package 
+     * @return array
+     * @throws Exception
+     */
+    public function getConfig( $package );
+    /**
+     * Attach a package to the current app
+     * @param string $package 
+     * @return void
+     */
+    public function attach( $package );
+    /**
+     * Remove the package usage
+     * @param string $package 
+     * @return void
+     */
+    public function detach( $package );
+    /**
+     * Retrieves the list of css includes
+     * @return array
+     */
+    public function getCss();
+    /**
+     * Gets a list of JS links
+     * @return array
+     */
+    public function getJs();    
+}
 /**
  * Services interfaces
  */
