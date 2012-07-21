@@ -58,6 +58,13 @@ class Application {
         return $this->getService('view');
     }
     /**
+     * Gets the logging service
+     * @return ILogger
+     */
+    public function getLogger() {
+        return $this->getService('logger');
+    }
+    /**
      * Execute the specified action controller 
      * @param string $controller
      * @param string $action
@@ -78,6 +85,13 @@ class Application {
             $route = $this->getService('router')->getRoute( $url );
             if ( $route === false ) {
                 throw new Exception('No route found', 404);
+            } else {
+                $parts = explode( '::', $route, 2 );
+                if ( empty($parts[1]) ) $parts[1] = 'index';
+                $this->execute( $parts[0], $parts[1], $params );
+                $this->getResponse()->write( 
+                    $this->getView()->renderTemplate() 
+                );
             }
         } catch( \Exception $ex ) {
             if ( $ex instanceof Exception && !$ex->isHttpError() ) {
@@ -106,6 +120,49 @@ interface IService {
      * @return Application
      */
     function getApplication();
+}
+/**
+ * The view interface
+ */
+interface IView extends IService {
+    /**
+     * Sets the main layout 
+     */
+    public function setLayout( $file );
+    /**
+     * Sets the templating file
+     */
+    public function setTemplate( $file );
+    /**
+     * Adds the specified data to the end of the specified
+     * zone (using the specified file for the rendering)
+     */
+    public function push( $zone, $file, $datasource );    
+    /**
+     * Adds the specified data to the top of the specified
+     * zone (using the specified file for the rendering)
+     */
+    public function insert( $zone, $file, $datasource );       
+    /**
+     * Renders the specified file
+     * @return string
+     */
+    public function render( $file, $datasource = null );
+    /**
+     * Renders the current template
+     * @return string
+     */
+    public function renderTemplate();    
+    /**
+     * Renders the current layout
+     * @return string
+     */
+    public function renderLayout();    
+    /**
+     * Renders the current layout
+     * @return string
+     */
+    public function renderPlaceholder( $zone );    
 }
 /**
  * The assets manager structure
@@ -159,6 +216,10 @@ interface IResponse extends IService {
      * Write a new line with the specified message
      */
     function writeLine( $message );
+    /**
+     * Outputs the specified contents
+     */
+    function write( $message );
 }
 /**
  * The logger interface

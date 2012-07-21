@@ -1,0 +1,17 @@
+<?php /* @var $app beaba\core\Application */ ?>
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">        
+        <title>Todo</title>
+        <?php foreach($app->getAssets()->getCss() as $css) { ?>
+        <link rel="stylesheet" href="<?php echo $css; ?>" />
+        <?php } ?>
+    </head>
+    <body>
+        <?php echo $app->getView()->renderLayout(); ?>
+        <?php foreach($app->getAssets()->getJs() as $js) { ?>
+        <script type="text/javascript" src="<?php echo $js; ?>" />
+        <?php } ?>        
+    </body>
+</html>

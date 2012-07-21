@@ -4,7 +4,7 @@ return array(
         'check' => array(
             'equals', '/'
         ),
-        'route' => 'application\\index::index'
+        'route' => 'application\\controllers\\index::index'
     ),
     'action' => array(
         'check' => array(
