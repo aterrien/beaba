@@ -122,6 +122,22 @@ interface IService {
     function getApplication();
 }
 /**
+ * The router interface
+ */
+interface IRouter extends IService {
+/**
+     * Retrieves a list of routes from the configuration
+     * @return array
+     */
+    public function getRoutes();    
+    /**
+     * Gets the requested route
+     * @param string $url
+     * @return string 
+     */
+    public function getRoute( $url );    
+}
+/**
  * The view interface
  */
 interface IView extends IService {

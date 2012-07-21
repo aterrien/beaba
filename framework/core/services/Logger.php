@@ -1,11 +1,12 @@
 <?php
-namespace beaba\core;
+namespace beaba\core\services;
+use \beaba\core;
 /**
  * This file is distributed under the MIT Open Source
  * License. See README.MD for details.
  * @author Ioan CHIRIAC
  */
-class ResponseLogger extends Service implements ILogger {
+class Logger extends core\Service implements core\ILogger {
     protected $level = 15;
     /**
      * Gets the current logger level

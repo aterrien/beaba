@@ -1,16 +1,17 @@
 <?php
-namespace beaba\core;
+namespace beaba\core\services;
+use \beaba\core;
 /**
  * This file is distributed under the MIT Open Source
  * License. See README.MD for details.
  * @author Ioan CHIRIAC
  */
-class ErrorHandler extends Service implements IErrorHandler {
+class ErrorHandler extends core\Service implements core\IErrorHandler {
     /**
      * @var ILogger
      */
     protected $logger;
-    public function attach( ILogger $logger ) {
+    public function attach( core\ILogger $logger ) {
         $this->logger = $logger;       
         ini_set( 'display_errors', 1 );
         error_reporting( -1 );

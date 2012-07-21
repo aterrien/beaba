@@ -1,11 +1,12 @@
 <?php
-namespace beaba\core;
+namespace beaba\core\services;
+use \beaba\core;
 /**
  * This file is distributed under the MIT Open Source
  * License. See README.MD for details.
  * @author Ioan CHIRIAC
  */
-class Router extends Service {
+class Router extends core\Service implements core\IRouter {
     /**
      * List of routing configuration
      * @var array
@@ -48,7 +49,7 @@ class Router extends Service {
      * @param mixed $check 
      * @return boolean
      */
-    public function isMatch( $url, $check ) {
-        return false;
+    protected function isMatch( $url, $check ) {
+        return true;
     }
 }
