@@ -10,7 +10,8 @@ class View extends core\Service implements core\IView {
     protected $template;
     protected $layout;
     protected $placeholders = array();
-    protected $renderers = array();
+    protected $renderers = array();   
+    protected $flag_render = false;
     /**
      * Sets the main layout 
      */
@@ -65,18 +66,20 @@ class View extends core\Service implements core\IView {
      * @return string
      */
     public function render( $file, $datasource = null ) {
+        // check for a callback
+        if (is_callable( $file ) ) {
+            $key = spl_object_hash( $file );
+            $this->renderers[ $key ] = $file;
+            $file = $key;
+        }
+        if ( !isset($this->renderers[ $file ]) ) {
+            $callback = strtr($file, '/.', '__');
+            if ( function_exists($callback) ) {
+                $this->renderers[ $file ] = $callback;
+            }                
+        }
         // already buffered
         if ( isset($this->renderers[ $file ]) ) {
-            ob_start();
-            $this->renderers[ $file ]( 
-                $this->app, $this->getDatasource($datasource)
-            );
-            return ob_get_clean();
-        }
-        // check for a callback
-        $callback = strtr($file, '/.', '__');
-        if ( function_exists($callback) ) {
-            $this->renderers[ $file ] = $callback;
             ob_start();
             $this->renderers[ $file ]( 
                 $this->app, $this->getDatasource($datasource)
@@ -119,15 +122,38 @@ class View extends core\Service implements core\IView {
     /**
      * Renders the current layout
      * @return string
+     * @throws \LogicException
      */
     public function renderLayout() {
-        if ( $this->layout ) {
-            return $this->render( $this->layout );
-        } else {
-            return $this->render( 
-                $this->app->getWebsite()->getLayout() 
+        if ( $this->flag_render ) {
+            throw new \LogicException(
+              'The current layout was already rendered'
             );
-        }        
+        }
+        $this->flag_render = true;
+        if ( !$this->layout ) 
+            $this->layout = $this->app->getWebsite()->getLayout();
+        // load the layout default configuration
+        $config = merge_array(
+            get_include( 'config/layouts.php' ), 
+            get_include( 'config/layouts/' . $this->layout )
+        );
+        foreach( $config as $zone => $widgets ) {
+            foreach( $widgets as $widget ) {
+                if ( 
+                    empty($widget['visible']) 
+                    || $widget['visible'] !== false
+                ) {
+                    $this->push(
+                        $zone, 
+                        $widget['render'], 
+                        empty($widget['data']) ? array() : $widget['data']
+                    );
+                }
+            }            
+        }
+        // renders the layout
+        return $this->render( $this->layout );
     }
     /**
      * Renders the current layout

@@ -12,7 +12,6 @@ class Application {
      * Initialize the application
      */
     public function __construct() {
-        $this->getService('logger')->debug('Application starts');
         $this->getService('errors')->attach(
             $this->getService('logger')
         );
