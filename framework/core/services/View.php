@@ -11,36 +11,48 @@ class View extends core\Service implements core\IView {
     protected $layout;
     protected $placeholders = array();
     protected $renderers = array();   
-    protected $flag_render = false;
+    protected $flag_render = false;    
+    /**
+     * Handle the assets loading
+     */
+    protected function onStart() {
+        parent::onStart();
+        foreach( $this->app->getWebsite()->getConfig('assets') as $asset ) {
+            $this->app->getAssets()->attach( $asset );
+        }
+    }
     /**
      * Sets the main layout 
      */
     public function setLayout( $file ) {
         $this->layout = $file;
+        return $this;
     }
     /**
      * Sets the templating file
      */
     public function setTemplate( $file ) {
         $this->template = $file;
+        return $this;
     }
     /**
      * Adds the specified data to the end of the specified
      * zone (using the specified file for the rendering)
      */
-    public function push( $zone, $file, $datasource ) {
+    public function push( $zone, $file, $datasource = null ) {
         if ( !isset($this->placeholders[ $zone ]) ) {
             $this->placeholders[ $zone ] = array();
         }
         $this->placeholders[ $zone ][] = array(
             $file, $datasource
         );
+        return $this;
     }
     /**
      * Adds the specified data to the top of the specified
      * zone (using the specified file for the rendering)
      */
-    public function insert( $zone, $file, $datasource ) {
+    public function insert( $zone, $file, $datasource = null ) {
         if ( !isset($this->placeholders[ $zone ]) ) {
             $this->placeholders[ $zone ] = array();
         }
@@ -48,6 +60,7 @@ class View extends core\Service implements core\IView {
             $this->placeholders[ $zone ], 
             array( $file, $datasource )
         );
+        return $this;
     }
     /**
      * Converts the current datasource to an array

@@ -9,9 +9,19 @@ class Application {
     protected $services;
     protected $instances = array();
     /**
+     * Defines a list of customized routes
+     * @var array
+     */
+    public $routes;
+    /**
      * Initialize the application
      */
-    public function __construct() {
+    public function __construct( array $routes = null ) {
+        if ( $routes ) {
+            $this->routes = $routes;
+        } else {
+            $this->routes = array();
+        }
         $this->getService('errors')->attach(
             $this->getService('logger')
         );
@@ -92,12 +102,21 @@ class Application {
             if ( $route === false ) {
                 throw new Exception('No route found', 404);
             } else {
-                $parts = explode( '::', $route, 2 );
-                if ( empty($parts[1]) ) $parts[1] = 'index';
-                $this->execute( $parts[0], $parts[1], $params );
-                $this->getResponse()->write( 
-                    $this->getView()->renderTemplate() 
-                );
+                if ( is_string( $route ) ) {
+                    // execute a controller
+                    $parts = explode( '::', $route, 2 );
+                    if ( empty($parts[1]) ) $parts[1] = 'index';
+                    $this->execute( $parts[0], $parts[1], $params );
+                    $this->getResponse()->write( 
+                        $this->getView()->renderTemplate() 
+                    );                    
+                } else {
+                    // use the route as a callback
+                    $route( $this, $params );
+                    $this->getResponse()->write( 
+                        $this->getView()->renderTemplate() 
+                    );                     
+                }
             }
         } catch( \Exception $ex ) {
             if ( $ex instanceof Exception && !$ex->isHttpError() ) {
@@ -223,22 +242,26 @@ interface IRouter extends IService {
 interface IView extends IService {
     /**
      * Sets the main layout 
+     * @return IView
      */
     public function setLayout( $file );
     /**
      * Sets the templating file
+     * @return IView
      */
     public function setTemplate( $file );
     /**
      * Adds the specified data to the end of the specified
      * zone (using the specified file for the rendering)
+     * @return IView
      */
-    public function push( $zone, $file, $datasource );    
+    public function push( $zone, $file, $datasource = null );    
     /**
      * Adds the specified data to the top of the specified
      * zone (using the specified file for the rendering)
+     * @return IView
      */
-    public function insert( $zone, $file, $datasource );       
+    public function insert( $zone, $file, $datasource = null );       
     /**
      * Renders the specified file
      * @return string

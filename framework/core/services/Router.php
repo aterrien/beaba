@@ -18,7 +18,10 @@ class Router extends core\Service implements core\IRouter {
      */
     public function getRoutes() {
         if ( !$this->routes ) {
-            $this->routes = get_include('config/routes.php');
+            $this->routes = merge_array(
+                get_include('config/routes.php'),
+                $this->app->routes
+            );
         }
         return $this->routes;
     }       
@@ -31,13 +34,17 @@ class Router extends core\Service implements core\IRouter {
     public function getRoute( $url ) {
         foreach( $this->getRoutes() as $route ) {
             if ( $this->isMatch($url, $route['check']) ) {
-                if ( is_string($route['route']) ) {
-                    return $route['route'];
+                if ( !empty($route['callback']) ) {
+                    return $route['callback'];
                 } else {
-                    $route = $route['route']( $url );
-                    if ( $route !== false ) {
-                        return $route;
-                    }
+                    if ( is_string($route['route']) ) {
+                        return $route['route'];
+                    } else {
+                        $route = $route['route']( $url );
+                        if ( $route !== false ) {
+                            return $route;
+                        }
+                    }                    
                 }
             }
         }
