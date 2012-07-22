@@ -5,5 +5,6 @@ return array(
     'errors'    => 'beaba\\core\\services\\ErrorHandler',
     'logger'    => 'beaba\\core\\services\\Logger',
     'assets'    => 'beaba\\core\\services\\Assets',
-    'view'      => 'beaba\\core\\services\\View'
+    'view'      => 'beaba\\core\\services\\View',
+    'website'   => 'beaba\\core\\services\\Website'
 );

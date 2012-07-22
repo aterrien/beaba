@@ -37,6 +37,13 @@ class Application {
         return $this->instances[ $name ];
     }   
     /**
+     * Gets the website configuration layer
+     * @return IWebsite
+     */
+    public function getWebsite() {
+        return $this->getService('website');
+    }
+    /**
      * Gets the asset manager
      * @return IAssets
      */
@@ -120,6 +127,40 @@ interface IService {
      * @return Application
      */
     function getApplication();
+}
+/**
+ * The website configuration layer
+ */
+interface IWebsite extends IService {
+    /**
+     * Check if the specified configuration key is defined
+     * @param string $key
+     * @return boolean 
+     */
+    public function hasConfig( $key );
+    /**
+     * Gets the configuration entry
+     * @param string $key 
+     * @return mixed
+     */
+    public function getConfig( $key );
+    /**
+     * Sets the specified configuration entry
+     * @param string $key
+     * @param mixed $value 
+     * @return void
+     */
+    public function setConfig( $key, $value );
+    /**
+     * Gets the website title
+     * @return string
+     */
+    public function getTitle();
+    /**
+     * Sets the current website title
+     * @param string $value 
+     */
+    public function setTitle( $value );
 }
 /**
  * The router interface
@@ -313,14 +354,19 @@ class Service implements IService {
      * Initialize the service
      * @param Application $app 
      */
-    public function __construct( Application $app ) {
+    final public function __construct( Application $app ) {
         $this->app = $app;
+        $this->onStart();
     }
+    /**
+     * Hook for the service starting
+     */
+    protected function onStart() { }
     /**
      * Gets the current application
      * @return Application 
      */
-    public function getApplication() {
+    final public function getApplication() {
         return $this->app;
     }
 }
