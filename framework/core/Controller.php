@@ -13,6 +13,9 @@ class Controller {
      */
     public function __construct( Application $app ) {
         $this->app = $app;
+        foreach( $this->app->getWebsite()->getConfig('assets') as $asset ) {
+            $this->app->getAssets()->attach( $asset );
+        }
     }
     /**
      * Executes the specified action

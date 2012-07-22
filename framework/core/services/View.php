@@ -7,8 +7,8 @@ use \beaba\core;
  * @author Ioan CHIRIAC
  */
 class View extends core\Service implements core\IView {
-    protected $template = 'default.phtml';
-    protected $layout = 'layout.phtml';
+    protected $template;
+    protected $layout;
     protected $placeholders = array();
     protected $renderers = array();
     /**
@@ -108,14 +108,26 @@ class View extends core\Service implements core\IView {
      * @return string
      */
     public function renderTemplate() {
-        return $this->render( $this->template );
+        if ( $this->template ) {
+            return $this->render( $this->template );
+        } else {
+            return $this->render( 
+                $this->app->getWebsite()->getTemplate() 
+            );
+        }        
     }
     /**
      * Renders the current layout
      * @return string
      */
     public function renderLayout() {
-        return $this->render( $this->layout );
+        if ( $this->layout ) {
+            return $this->render( $this->layout );
+        } else {
+            return $this->render( 
+                $this->app->getWebsite()->getLayout() 
+            );
+        }        
     }
     /**
      * Renders the current layout

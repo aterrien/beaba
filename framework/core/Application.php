@@ -152,15 +152,55 @@ interface IWebsite extends IService {
      */
     public function setConfig( $key, $value );
     /**
-     * Gets the website title
+     * Gets the website name
+     * @return string
+     */
+    public function getName();
+    /**
+     * Sets the current website name
+     * @param string $value 
+     */
+    public function setName( $value );
+    /**
+     * Gets the page title
      * @return string
      */
     public function getTitle();
     /**
-     * Sets the current website title
+     * Sets the current page title
      * @param string $value 
      */
     public function setTitle( $value );
+    /**
+     * Gets the page description
+     * @return string
+     */
+    public function getDescription();
+    /**
+     * Sets the current page description
+     * @param string $value 
+     */
+    public function setDescription( $value );
+    /**
+     * Gets the page template
+     * @return string
+     */
+    public function getTemplate();
+    /**
+     * Sets the current page template
+     * @param string $value 
+     */
+    public function setTemplate( $value );
+    /**
+     * Gets the page layout
+     * @return string
+     */
+    public function getLayout();
+    /**
+     * Sets the current page layout
+     * @param string $value 
+     */
+    public function setLayout( $value );
 }
 /**
  * The router interface

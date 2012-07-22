@@ -10,7 +10,5 @@ class index extends \beaba\core\Controller {
      * The index application entry
      * @param array $args 
      */
-    public function index( array $args ) {
-        $this->app->getAssets()->attach('bootstrap');
-    }
+    public function index( array $args ) { }
 }
