@@ -9,6 +9,11 @@ class Application {
     protected $services;
     protected $instances = array();
     /**
+     * The website base dir
+     * @var string 
+     */
+    public $base_dir;
+    /**
      * Defines a list of customized routes
      * @var array
      */
@@ -98,6 +103,16 @@ class Application {
      */
     public function dispatch( $url, $params ) {        
         try {
+            $this->base_dir = substr(
+                $_SERVER['SCRIPT_NAME'], 0, 
+                strrpos($_SERVER['SCRIPT_NAME'], '/')
+            );
+            $query = strpos($url, '?');
+            $url = substr(
+                $url, strlen($this->base_dir), 
+                $query !== false ? 
+                    $query - strlen($this->base_dir) : strlen($url)
+            );
             $route = $this->getService('router')->getRoute( $url );
             if ( $route === false ) {
                 throw new Exception('No route found', 404);
@@ -107,15 +122,9 @@ class Application {
                     $parts = explode( '::', $route, 2 );
                     if ( empty($parts[1]) ) $parts[1] = 'index';
                     $this->execute( $parts[0], $parts[1], $params );
-                    $this->getResponse()->write( 
-                        $this->getView()->renderTemplate() 
-                    );                    
                 } else {
                     // use the route as a callback
-                    $route( $this, $params );
-                    $this->getResponse()->write( 
-                        $this->getView()->renderTemplate() 
-                    );                     
+                    $route( $this, $params );                                         
                 }
             }
         } catch( \Exception $ex ) {
@@ -134,6 +143,9 @@ class Application {
                 );                
             }
         }
+        $this->getResponse()->write( 
+            $this->getView()->renderTemplate() 
+        );        
     }
 }
 /**

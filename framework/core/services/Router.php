@@ -31,7 +31,7 @@ class Router extends core\Service implements core\IRouter {
      * @param string $url
      * @return string 
      */
-    public function getRoute( $url ) {
+    public function getRoute( $url ) {       
         foreach( $this->getRoutes() as $route ) {
             if ( $this->isMatch($url, $route['check']) ) {
                 if ( !empty($route['callback']) ) {
@@ -57,6 +57,30 @@ class Router extends core\Service implements core\IRouter {
      * @return boolean
      */
     protected function isMatch( $url, $check ) {
-        return true;
+        switch( $check[0] ) {
+            case 'equals':
+                if ( is_array($check[1]) ) {
+                    return in_array($url, $check[1]);
+                } else {
+                    return ($url === $check[1]);
+                }
+                break;
+            case 'path':
+                $times = substr_count($url, '/');
+                if ( !empty($check[2]) ) {
+                    return $times >= $check[1] && $times <= $check[2];
+                } else {
+                    if ( is_array($check[1]) ) {
+                        return in_array( $times, $check[1] );
+                    } else {
+                        return $times === $check[1];
+                    }                     
+                }                
+                break;
+            default:
+                throw new \Exception(
+                  'Bad check method : ' . $check[0]
+                );
+        }
     }
 }

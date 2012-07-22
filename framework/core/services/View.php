@@ -72,6 +72,8 @@ class View extends core\Service implements core\IView {
         }
         if ( is_callable($datasource) ) {
             return $datasource( $this->app );
+        } else {
+            return $datasource;
         }
     }
     /**

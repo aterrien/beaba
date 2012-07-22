@@ -5,5 +5,8 @@ return array(
     'description'   => 'Your page description',
     'template'      => 'default.phtml',
     'layout'        => 'layout.phtml',
-    'assets'        => array('bootstrap')
+    'assets'        => array('bootstrap'),
+    'users'         => array(
+        'admin' => 'secret'
+    )
 );
