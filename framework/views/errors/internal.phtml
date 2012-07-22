@@ -1,0 +1,19 @@
+<?php /* @var $data Exception */ ?>
+<div class="span12">
+    <div class="page-header">
+        <h1>
+            An unexpected error occurred            
+            <small>Internal Server Error</small>
+        </h1>
+    </div>
+    <p>
+        <strong>
+            <?php echo $data->getMessage(); ?>
+        </strong>
+    </p>
+    <hr />
+    <h2>See the following details :</h2>    
+    <pre><code><?php
+        echo($data);
+    ?></code></pre>
+</div>
