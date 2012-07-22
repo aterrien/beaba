@@ -16,13 +16,16 @@ Example
     require_once '../bootstrap.php'; 
     $app = new beaba\core\Application(array(
         'index' => array(
-            'route' => function( $app, $args ) {
-                $app->getView()->push(
-                    'content',
-                    function( $app, $data ) {
-                        echo 'Hello world';
-                    }
-                );
+            'callback' => function( $app, $args ) {
+                $app->getView()
+                    ->setLayout('empty.phtml')
+                    ->push(
+                        'content',
+                        function( $app, $data ) {
+                            echo 'Hello world';
+                        }
+                    )
+                ;    
             }
         )
     ));
