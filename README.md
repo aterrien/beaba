@@ -41,19 +41,19 @@ Install
 1. Download this this project
 
 2. Create an apache vhost :
-<code>
-    <VirtualHost *:80>
+<pre><code>
+    &lt;VirtualHost *:80&gt;
         ServerAdmin dev.beaba@localhost.dev
         ServerName beaba.localhost.dev
         DocumentRoot /var/www/beaba/public/
-    </VirtualHost>
-    <Directory /var/www/beaba/public/>
+    &lt;/VirtualHost&gt;
+    &lt;Directory /var/www/beaba/public/&gt;
         RewriteEngine on
         RewriteCond %{REQUEST_FILENAME} !-f
         RewriteCond %{REQUEST_FILENAME} !-d
         RewriteRule ^(.*)$ index.php?p=$1& [QSA,L]         
-    </Directory>
-</code>
+    &lt;/Directory&gt;
+</code></pre>
 3. Add to the domain to /etc/hosts
 
     $ echo "127.0.0.1 beaba.localhost.dev" >> /etc/hosts
