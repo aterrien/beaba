@@ -41,7 +41,7 @@ Install
 1. Download this this project
 
 2. Create an apache vhost :
-
+<code>
     <VirtualHost *:80>
         ServerAdmin dev.beaba@localhost.dev
         ServerName beaba.localhost.dev
@@ -53,7 +53,7 @@ Install
         RewriteCond %{REQUEST_FILENAME} !-d
         RewriteRule ^(.*)$ index.php?p=$1& [QSA,L]         
     </Directory>
-
+</code>
 3. Add to the domain to /etc/hosts
 
     $ echo "127.0.0.1 beaba.localhost.dev" >> /etc/hosts
