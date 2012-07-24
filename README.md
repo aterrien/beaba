@@ -41,8 +41,7 @@ Install
 1. Download this this project
 
 2. Create an apache vhost :
-<pre><code>
-    &lt;VirtualHost *:80&gt;
+<pre><code>    &lt;VirtualHost *:80&gt;
         ServerAdmin dev.beaba@localhost.dev
         ServerName beaba.localhost.dev
         DocumentRoot /var/www/beaba/public/
@@ -56,7 +55,7 @@ Install
 </code></pre>
 3. Add to the domain to /etc/hosts
 
-    $ echo "127.0.0.1 beaba.localhost.dev" >> /etc/hosts
+    <code>$ echo "127.0.0.1 beaba.localhost.dev" &gt;&gt; /etc/hosts</code>
 
 MIT License
 ===========
