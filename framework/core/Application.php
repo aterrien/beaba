@@ -5,9 +5,40 @@ namespace beaba\core;
  * License. See README.MD for details.
  * @author Ioan CHIRIAC
  */
-class Application 
+class Application extends Event
 {    
+    
+    /**
+     * the application start
+     */
+    const E_LOAD        = 'onLoad';
+    /**
+     * before the request dispatch
+     */
+    const E_DISPATCH    = 'onDispatch';
+    /**
+     * if an error occurs during the dispatch
+     */
+    const E_ERROR       = 'onError';
+    /**
+     * before rendering the view
+     */
+    const E_BEFORE_RENDER      = 'beforeRender';
+    /**
+     * before rendering the view
+     */
+    const E_AFTER_RENDER      = 'afterRender';
+    /**
+     * the application ends
+     */
+    const E_UNLOAD      = 'onUnload';
+    /**
+     * @var array List of services configuration
+     */
     protected $_services;
+    /**
+     * @var array List of services instances
+     */
     protected $_instances = array();
     /**
      * The website base dir
@@ -32,6 +63,14 @@ class Application
         $this->getService('errors')->attach(
             $this->getService('logger')
         );
+        $this->_raise( self::E_LOAD );
+    }
+    /**
+     * Uninitialize the app
+     */
+    public function __destruct() 
+    {
+        $this->_raise( self::E_UNLOAD );
     }
     /**
      * Gets a service instance
@@ -113,6 +152,13 @@ class Application
     public function dispatch( $url, $params ) 
     {        
         try {
+            $this->_raise( 
+                self::E_DISPATCH, 
+                array(
+                    'request'   => $url,
+                    'params'    => $params
+                ) 
+            );
             $this->base_dir = substr(
                 $_SERVER['SCRIPT_NAME'], 0, 
                 strrpos($_SERVER['SCRIPT_NAME'], '/')
@@ -138,6 +184,14 @@ class Application
                 }
             }
         } catch( \Exception $ex ) {
+            $this->_raise( 
+                self::E_ERROR, 
+                array(
+                    'request'   => $url,
+                    'params'    => $params,
+                    'error'     => $ex
+                ) 
+            );            
             if ( $ex instanceof Exception && !$ex->isHttpError() ) {
                 $this->getService('response')->setCode(
                     $ex->getCode(), $ex->getHttpMessage()
@@ -153,9 +207,15 @@ class Application
                 );                
             }
         }
-        $this->getResponse()->write( 
-            $this->getView()->renderTemplate() 
-        );        
+        $this->_raise( self::E_BEFORE_RENDER );
+        $response = $this->getView()->renderTemplate();
+        $this->_raise( 
+            self::E_AFTER_RENDER, 
+            array(
+                'response' => &$response
+            )
+        );
+        $this->getResponse()->write( $response );        
     }
 }
 /**

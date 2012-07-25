@@ -21,7 +21,7 @@ class Event
         $class = get_class( $object );
         if ( !isset( static::$_listeners[ $class ] ) ) {
             static::_loadListeners( $class );
-        }
+        }        
         $results = array();
         if ( !empty( static::$_listeners[ $class ][ $event ] ) ) {
             foreach( static::$_listeners[ $class ][ $event ] as $listener ) {
@@ -40,7 +40,7 @@ class Event
      * @return void
      */
     protected static function _loadListeners( $class ) 
-    {
+    {        
         static::$_listeners[ $class ] = get_include( 
             'events/' . strtr($class, '\\', '/') . '.php'
         );
