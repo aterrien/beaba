@@ -5,7 +5,8 @@ namespace beaba\core;
  * License. See README.MD for details.
  * @author Ioan CHIRIAC
  */
-class Exception extends \Exception {
+class Exception extends \Exception 
+{
     /**
      * List of common http codes
      */
@@ -28,7 +29,8 @@ class Exception extends \Exception {
      * Check if the current http code is an error
      * @return boolean
      */
-    public function isHttpError() {
+    public function isHttpError() 
+    {
         return ( 
             $this->getCode() == 0 || $this->getCode() > 399
         );
@@ -37,7 +39,8 @@ class Exception extends \Exception {
      * Gets the http error message
      * @return string
      */
-    public function getHttpMessage() {
+    public function getHttpMessage() 
+    {
         if ( isset( static::$codes[ $this->getCode() ] ) ) {
             return static::$codes[ $this->getCode() ];
         } else {
