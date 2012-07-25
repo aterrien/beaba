@@ -17,7 +17,7 @@
     <body>
         <?php echo $app->getView()->renderLayout(); ?>
         <?php foreach($app->getAssets()->getJs() as $js) { ?>
-        <script type="text/javascript" src="<?php echo $js; ?>" />
+        <script type="text/javascript" src="<?php echo $js; ?>"></script>
         <?php } ?>        
     </body>
 </html>
