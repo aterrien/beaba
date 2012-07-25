@@ -6,24 +6,26 @@ use \beaba\core;
  * License. See README.MD for details.
  * @author Ioan CHIRIAC
  */
-class Router extends core\Service implements core\IRouter {
+class Router extends core\Service implements core\IRouter 
+{
     /**
      * List of routing configuration
      * @var array
      */
-    protected $routes;          
+    protected $_routes;          
     /**
      * Retrieves a list of routes from the configuration
      * @return array
      */
-    public function getRoutes() {
-        if ( !$this->routes ) {
-            $this->routes = merge_array(
+    public function getRoutes() 
+    {
+        if ( !$this->_routes ) {
+            $this->_routes = merge_array(
                 get_include('config/routes.php'),
-                $this->app->routes
+                $this->_app->routes
             );
         }
-        return $this->routes;
+        return $this->_routes;
     }       
     
     /**
@@ -31,9 +33,10 @@ class Router extends core\Service implements core\IRouter {
      * @param string $url
      * @return string 
      */
-    public function getRoute( $url ) {       
+    public function getRoute( $url ) 
+    {       
         foreach( $this->getRoutes() as $route ) {
-            if ( $this->isMatch($url, $route['check']) ) {
+            if ( $this->_isMatch($url, $route['check']) ) {
                 if ( !empty($route['callback']) ) {
                     return $route['callback'];
                 } else {
@@ -56,7 +59,8 @@ class Router extends core\Service implements core\IRouter {
      * @param mixed $check 
      * @return boolean
      */
-    protected function isMatch( $url, $check ) {
+    protected function _isMatch( $url, $check ) 
+    {
         switch( $check[0] ) {
             case 'equals':
                 if ( is_array($check[1]) ) {

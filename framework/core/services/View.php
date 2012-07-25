@@ -6,44 +6,49 @@ use \beaba\core;
  * License. See README.MD for details.
  * @author Ioan CHIRIAC
  */
-class View extends core\Service implements core\IView {
-    protected $template;
-    protected $layout;
-    protected $placeholders = array();
-    protected $renderers = array();   
-    protected $flag_render = false;    
+class View extends core\Service implements core\IView 
+{
+    protected $_template;
+    protected $_layout;
+    protected $_placeholders = array();
+    protected $_renderers = array();   
+    protected $_flagRender = false;    
     /**
      * Handle the assets loading
      */
-    protected function onStart() {
-        parent::onStart();
-        foreach( $this->app->getWebsite()->getConfig('assets') as $asset ) {
-            $this->app->getAssets()->attach( $asset );
+    protected function _onStart() 
+    {
+        parent::_onStart();
+        foreach( $this->_app->getWebsite()->getConfig('assets') as $asset ) {
+            $this->_app->getAssets()->attach( $asset );
         }
     }
     /**
      * Sets the main layout 
      */
-    public function setLayout( $file ) {
-        $this->layout = $file;
+    public function setLayout( $file ) 
+    {
+        $this->_layout = $file;
         return $this;
     }
     /**
      * Sets the templating file
      */
-    public function setTemplate( $file ) {
-        $this->template = $file;
+    public function setTemplate( $file ) 
+    {
+        $this->_template = $file;
         return $this;
     }
     /**
      * Adds the specified data to the end of the specified
      * zone (using the specified file for the rendering)
      */
-    public function push( $zone, $file, $datasource = null ) {
-        if ( !isset($this->placeholders[ $zone ]) ) {
-            $this->placeholders[ $zone ] = array();
+    public function push( $zone, $file, $datasource = null ) 
+    {
+        if ( !isset($this->_placeholders[ $zone ]) ) {
+            $this->_placeholders[ $zone ] = array();
         }
-        $this->placeholders[ $zone ][] = array(
+        $this->_placeholders[ $zone ][] = array(
             $file, $datasource
         );
         return $this;
@@ -52,12 +57,13 @@ class View extends core\Service implements core\IView {
      * Adds the specified data to the top of the specified
      * zone (using the specified file for the rendering)
      */
-    public function insert( $zone, $file, $datasource = null ) {
-        if ( !isset($this->placeholders[ $zone ]) ) {
-            $this->placeholders[ $zone ] = array();
+    public function insert( $zone, $file, $datasource = null ) 
+    {
+        if ( !isset($this->_placeholders[ $zone ]) ) {
+            $this->_placeholders[ $zone ] = array();
         }
         array_unshift(
-            $this->placeholders[ $zone ], 
+            $this->_placeholders[ $zone ], 
             array( $file, $datasource )
         );
         return $this;
@@ -66,12 +72,13 @@ class View extends core\Service implements core\IView {
      * Converts the current datasource to an array
      * @return array
      */
-    protected function getDatasource( $datasource = null ) {
+    protected function getDatasource( $datasource = null ) 
+    {
         if ( !$datasource || is_array($datasource) ) {
             return $datasource;
         }
         if ( is_callable($datasource) ) {
-            return $datasource( $this->app );
+            return $datasource( $this->_app );
         } else {
             return $datasource;
         }
@@ -80,30 +87,31 @@ class View extends core\Service implements core\IView {
      * Renders the specified file
      * @return string
      */
-    public function render( $file, $datasource = null ) {
+    public function render( $file, $datasource = null ) 
+    {
         // check for a callback
         if (is_callable( $file ) ) {
             $key = spl_object_hash( $file );
-            $this->renderers[ $key ] = $file;
+            $this->_renderers[ $key ] = $file;
             $file = $key;
         }
-        if ( !isset($this->renderers[ $file ]) ) {
+        if ( !isset($this->_renderers[ $file ]) ) {
             $callback = strtr($file, '/.', '__');
             if ( function_exists($callback) ) {
-                $this->renderers[ $file ] = $callback;
+                $this->_renderers[ $file ] = $callback;
             }                
         }
         // already buffered
-        if ( isset($this->renderers[ $file ]) ) {
+        if ( isset($this->_renderers[ $file ]) ) {
             ob_start();
-            $this->renderers[ $file ]( 
-                $this->app, $this->getDatasource($datasource)
+            $this->_renderers[ $file ]( 
+                $this->_app, $this->getDatasource($datasource)
             );
             return ob_get_clean();
         }
         // check for a file include
         $target = 'views/' . $file;
-        $app = $this->app;
+        $app = $this->_app;
         $data = $this->getDatasource($datasource);
         if ( !file_exists( $target ) ) {
             if ( file_exists( BEABA_APP . '/' . $target ) ) {
@@ -111,7 +119,7 @@ class View extends core\Service implements core\IView {
             } elseif ( file_exists( BEABA_PATH . '/' . $target ) ) {
                 $target = BEABA_PATH . '/' . $target;
             } else {
-                $this->getApplication()->getLogger()->warning(
+                $this->_app->getLogger()->warning(
                   'Unable to locate the view : ' . $target
                 );
                 return '';                
@@ -125,12 +133,13 @@ class View extends core\Service implements core\IView {
      * Renders the current template
      * @return string
      */
-    public function renderTemplate() {
-        if ( $this->template ) {
-            return $this->render( $this->template );
+    public function renderTemplate() 
+    {
+        if ( $this->_template ) {
+            return $this->render( $this->_template );
         } else {
             return $this->render( 
-                $this->app->getWebsite()->getTemplate() 
+                $this->_app->getWebsite()->getTemplate() 
             );
         }        
     }
@@ -139,19 +148,20 @@ class View extends core\Service implements core\IView {
      * @return string
      * @throws \LogicException
      */
-    public function renderLayout() {
-        if ( $this->flag_render ) {
+    public function renderLayout() 
+    {
+        if ( $this->_flagRender ) {
             throw new \LogicException(
               'The current layout was already rendered'
             );
         }
-        $this->flag_render = true;
-        if ( !$this->layout ) 
-            $this->layout = $this->app->getWebsite()->getLayout();
+        $this->_flagRender = true;
+        if ( !$this->_layout ) 
+            $this->_layout = $this->_app->getWebsite()->getLayout();
         // load the layout default configuration
         $config = merge_array(
             get_include( 'config/layouts.php' ), 
-            get_include( 'config/layouts/' . $this->layout )
+            get_include( 'config/layouts/' . $this->_layout )
         );
         foreach( $config as $zone => $widgets ) {
             foreach( $widgets as $widget ) {
@@ -168,21 +178,22 @@ class View extends core\Service implements core\IView {
             }            
         }
         // renders the layout
-        return $this->render( $this->layout );
+        return $this->render( $this->_layout );
     }
     /**
      * Renders the current layout
      * @return string
      */
-    public function renderPlaceholder( $zone ) {
-        if ( isset( $this->placeholders[$zone]) ) {
+    public function renderPlaceholder( $zone ) 
+    {
+        if ( isset( $this->_placeholders[$zone]) ) {
             $result = '';
-            foreach( $this->placeholders[$zone] as $item ) {
+            foreach( $this->_placeholders[$zone] as $item ) {
                 $result .= $this->render( $item[0], $item[1] );
             }
             return $result;
         } else {
-            $this->getApplication()->getLogger()->warning(
+            $this->_app->getLogger()->warning(
               'Undefined placeholder : ' . $zone
             );
             return '';

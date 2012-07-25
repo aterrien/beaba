@@ -42,7 +42,7 @@ class Event
     protected static function _loadListeners( $class ) 
     {
         static::$_listeners[ $class ] = get_include( 
-            'events/' . strtr($class, '\\', '/') 
+            'events/' . strtr($class, '\\', '/') . '.php'
         );
     }    
     /**

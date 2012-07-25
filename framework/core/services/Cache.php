@@ -8,6 +8,7 @@ use \beaba\core;
  * @copyright Copyright (c) 2011, Tara Sidaya Chiriac
  * @package core
  */
-class Cache extends core\Service implements core\ICache {
+class Cache extends core\Service implements core\ICache 
+{
     
 }

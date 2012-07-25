@@ -8,26 +8,29 @@ use \beaba\core;
  * @copyright Copyright (c) 2011, Tara Sidaya Chiriac
  * @package core
  */
-class Website  extends core\Service implements core\IWebsite {
-    protected $config;
-    protected $filename = 'config/website.php';
+class Website  extends core\Service implements core\IWebsite 
+{
+    protected $_config;
+    protected $_filename = 'config/website.php';
     /**
      * Check if the specified configuration key is defined
      * @param string $key
      * @return boolean 
      */
-    public function hasConfig( $key ) {
-        if ( !$this->config ) {
-            $this->config =  get_include( $this->filename );
+    public function hasConfig( $key ) 
+    {
+        if ( !$this->_config ) {
+            $this->_config =  get_include( $this->_filename );
         }
-        return isset( $this->config[ $key ] );
+        return isset( $this->_config[ $key ] );
     }
     /**
      * Requires the specified configuration key
      * @param string $key 
      * @throws \OutOfRangeException
      */
-    protected function requireConfig( $key ) {
+    protected function requireConfig( $key ) 
+    {
         if ( !$this->hasConfig( $key ) ) {
             throw new \OutOfRangeException(
               'Undefined website config : ' . $key
@@ -39,9 +42,10 @@ class Website  extends core\Service implements core\IWebsite {
      * @param string $key 
      * @return mixed
      */
-    public function getConfig( $key ) {
+    public function getConfig( $key ) 
+    {
         $this->requireConfig($key);
-        return $this->config[ $key ];
+        return $this->_config[ $key ];
     }
     /**
      * Sets the specified configuration entry
@@ -49,88 +53,99 @@ class Website  extends core\Service implements core\IWebsite {
      * @param mixed $value 
      * @return void
      */
-    public function setConfig( $key, $value ) {
-        if ( !$this->config ) {
-            $this->config =  get_include( $this->filename );
+    public function setConfig( $key, $value ) 
+    {
+        if ( !$this->_config ) {
+            $this->_config =  get_include( $this->_filename );
         }        
         if ( 
            is_array($value) 
-           && isset($this->config[$key]) 
-           && is_array($this->config[$key])
+           && isset($this->_config[$key]) 
+           && is_array($this->_config[$key])
         ) {
-            $this->config[ $key ] = merge_array($this->config[ $key ], $value);
+            $this->_config[ $key ] = merge_array($this->_config[ $key ], $value);
         } else {
-            $this->config[$key] = $value;
+            $this->_config[$key] = $value;
         }        
     }
     /**
      * Gets the website name
      * @return string
      */
-    public function getName() {
+    public function getName() 
+    {
         return $this->getConfig( 'name' );
     }
     /**
      * Sets the current website name
      * @param string $value 
      */
-    public function setName( $value ) {
+    public function setName( $value ) 
+    {
         $this->setConfig('name', $value);
     }
     /**
      * Gets the page title
      * @return string
      */
-    public function getTitle() {
+    public function getTitle() 
+    {
         return $this->getConfig( 'title' );
     }
     /**
      * Sets the current page title
      * @param string $value 
      */
-    public function setTitle( $value ) {
+    public function setTitle( $value ) 
+    {
         $this->setConfig('title', $value);
     }
     /**
      * Gets the page description
      * @return string
      */
-    public function getDescription() {
+    public function getDescription() 
+    {
         return $this->getConfig( 'description' );
     }
     /**
      * Sets the current page description
      * @param string $value 
      */
-    public function setDescription( $value ) {
+    public function setDescription( $value ) 
+    {
         $this->setConfig('description', $value);
     }    
     /**
      * Gets the page template
      * @return string
      */
-    public function getTemplate() {
+    public function getTemplate() 
+    {
         return $this->getConfig( 'template' );
     }
     /**
      * Sets the current page template
      * @param string $value 
      */
-    public function setTemplate( $value ) {
+    public function setTemplate( $value ) 
+    {
         $this->setConfig('template', $value);
     }    
     /**
      * Gets the page layout
      * @return string
      */
-    public function getLayout() {
+    public function getLayout() 
+    {
         return $this->getConfig( 'layout' );
     }
     /**
      * Sets the current page layout
      * @param string $value 
      */
-    public function setLayout( $value ) {
+    public function setLayout( $value ) 
+    {
         $this->setConfig('layout', $value);
     }    
 }

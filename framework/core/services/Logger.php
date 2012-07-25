@@ -6,27 +6,29 @@ use \beaba\core;
  * License. See README.MD for details.
  * @author Ioan CHIRIAC
  */
-class Logger extends core\Service implements core\ILogger {
-    protected $level = 15;
+class Logger extends core\Service implements core\ILogger 
+{
+    protected $_level = 15;
     /**
      * Gets the current logger level
      * @return int
      */
     public function getLevel() {
-        return $this->level;
+        return $this->_level;
     }
     /**
      * Sets the log level
      */
     public function setLevel( $level ) {
-        $this->level = $level;
+        $this->_level = $level;
     }
     /**
      * Send a debug message
      */
-    public function debug($message) {
-        if ( $this->level | self::DEBUG ) {
-            $this->app->getService('response')->writeLine(
+    public function debug($message) 
+    {
+        if ( $this->_level | self::DEBUG ) {
+            $this->_app->getService('response')->writeLine(
                 'DEBUG : ' . $message
             );
         }
@@ -34,9 +36,10 @@ class Logger extends core\Service implements core\ILogger {
     /**
      * Sends an info message
      */
-    function info($message) {
-        if ( $this->level | self::INFO ) {
-            $this->app->getService('response')->writeLine(
+    function info($message) 
+    {
+        if ( $this->_level | self::INFO ) {
+            $this->_app->getService('response')->writeLine(
                 'INFO : ' . $message
             );
         }                        
@@ -44,9 +47,10 @@ class Logger extends core\Service implements core\ILogger {
     /**
      * Send a warning message
      */
-    function warning($message) {
-        if ( $this->level | self::WARNING ) {
-            $this->app->getService('response')->writeLine(
+    function warning($message) 
+    {
+        if ( $this->_level | self::WARNING ) {
+            $this->_app->getService('response')->writeLine(
                 'WARNING : ' . $message
             );
         }                
@@ -54,9 +58,10 @@ class Logger extends core\Service implements core\ILogger {
     /**
      * Send an error message
      */
-    function error($message) {
-        if ( $this->level | self::ERROR ) {
-            $this->app->getService('response')->writeLine(
+    function error($message) 
+    {
+        if ( $this->_level | self::ERROR ) {
+            $this->_app->getService('response')->writeLine(
                 'ERROR : ' . $message
             );
         }        

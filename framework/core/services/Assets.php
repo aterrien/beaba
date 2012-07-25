@@ -6,17 +6,19 @@ use \beaba\core;
  * License. See README.MD for details.
  * @author Ioan CHIRIAC
  */
-class Assets extends core\Service implements core\IAssets {
-    protected $packages = array();
-    protected $config;        
+class Assets extends core\Service implements core\IAssets 
+{
+    protected $_packages = array();
+    protected $_config;        
     /**
      * Check if the specified package is defined
      * @param string $package 
      * @return boolean
      */
-    public function hasConfig( $package ) {
-        if ( !$this->config ) $this->config = get_include('config/assets.php');
-        return isset( $this->config[ $package ] );
+    public function hasConfig( $package ) 
+    {
+        if ( !$this->_config ) $this->_config = get_include('config/assets.php');
+        return isset( $this->_config[ $package ] );
     }
     /**
      * Verify and raise an exception if the specified package is not
@@ -24,7 +26,8 @@ class Assets extends core\Service implements core\IAssets {
      * @param string $package 
      * @return void
      */
-    protected function requirePackage( $package ) {
+    protected function requirePackage( $package ) 
+    {
         if ( !$this->hasConfig( $package ) ) {
             throw new \OutOfRangeException(
               'Undefined asset package : ' . $package
@@ -37,24 +40,26 @@ class Assets extends core\Service implements core\IAssets {
      * @return array
      * @throws Exception
      */
-    public function getConfig( $package ) {
+    public function getConfig( $package ) 
+    {
         $this->requirePackage( $package );
-        return $this->config[ $package ];
+        return $this->_config[ $package ];
     }
     /**
      * Attach a package to the current app
      * @param string $package 
      * @return void
      */
-    public function attach( $package ) {
+    public function attach( $package ) 
+    {
         $config = $this->getConfig( $package );
-        if ( !in_array( $package, $this->packages ) ) {
+        if ( !in_array( $package, $this->_packages ) ) {
             if ( !empty($config['depends']) ) {
                 foreach($config['depends'] as $dependency) {
                     $this->attach( $dependency );
                 }
             }
-            $this->packages[] = $package;
+            $this->_packages[] = $package;
         }
     }
     /**
@@ -62,19 +67,21 @@ class Assets extends core\Service implements core\IAssets {
      * @param string $package 
      * @return void
      */
-    public function detach( $package ) {
-        $offset = array_search($package, $this->packages);
+    public function detach( $package ) 
+    {
+        $offset = array_search($package, $this->_packages);
         if ( $offset !== false ) {
-            unset( $this->packages[$offset] );
+            unset( $this->_packages[$offset] );
         }
     }
     /**
      * Retrieves the list of css includes
      * @return array
      */
-    public function getCss() {
+    public function getCss() 
+    {
         $result = array();
-        foreach( $this->packages as $package ) {
+        foreach( $this->_packages as $package ) {
             $config = $this->getConfig($package);
             if ( !empty($config['css']) ) {
                 foreach( $config['css'] as $item ) {
@@ -88,9 +95,10 @@ class Assets extends core\Service implements core\IAssets {
      * Gets a list of JS links
      * @return array
      */
-    public function getJs() {
+    public function getJs() 
+    {
         $result = array();
-        foreach( $this->packages as $package ) {
+        foreach( $this->_packages as $package ) {
             $config = $this->getConfig($package);
             if ( !empty($config['js']) ) {
                 foreach( $config['js'] as $item ) {

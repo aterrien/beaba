@@ -6,15 +6,19 @@ use \beaba\core;
  * License. See README.MD for details.
  * @author Ioan CHIRIAC
  */
-class Response extends core\Service implements core\IResponse {    
-    public function setCode( $code, $message ) {
+class Response extends core\Service implements core\IResponse 
+{    
+    public function setCode( $code, $message ) 
+    {
         header('HTTP/1.0 '.$code.' '.$message);
         header('Status: '.$code.' '.$message);
     }
-    public function writeLine( $message ) {
+    public function writeLine( $message ) 
+    {
         echo $message . '<br />';
     }
-    public function write( $message ) {
+    public function write( $message ) 
+    {
         echo $message;
     }
 }
