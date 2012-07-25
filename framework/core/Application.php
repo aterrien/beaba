@@ -5,9 +5,10 @@ namespace beaba\core;
  * License. See README.MD for details.
  * @author Ioan CHIRIAC
  */
-class Application {    
-    protected $services;
-    protected $instances = array();
+class Application 
+{    
+    protected $_services;
+    protected $_instances = array();
     /**
      * The website base dir
      * @var string 
@@ -21,7 +22,8 @@ class Application {
     /**
      * Initialize the application
      */
-    public function __construct( array $routes = null ) {
+    public function __construct( array $routes = null ) 
+    {
         if ( $routes ) {
             $this->routes = $routes;
         } else {
@@ -36,53 +38,59 @@ class Application {
      * @param string $name 
      * @return IService
      */
-    public function getService( $name ) {
-        if ( !isset( $this->instances[ $name ] ) ) {
-            if (!$this->services) {
-                $this->services = get_include('config/services.php');
+    public function getService( $name ) 
+    {
+        if ( !isset( $this->_instances[ $name ] ) ) {
+            if (!$this->_services) {
+                $this->_services = get_include('config/services.php');
             }
-            if ( !isset( $this->services[ $name ]) ) {
+            if ( !isset( $this->_services[ $name ]) ) {
                 throw new \Exception(
                     'Undefined service : ' . $name
                 );
             }
-            $this->instances[ $name ] = new $this->services[ $name ]( $this );
+            $this->_instances[ $name ] = new $this->_services[ $name ]( $this );
         }
-        return $this->instances[ $name ];
+        return $this->_instances[ $name ];
     }   
     /**
      * Gets the website configuration layer
      * @return IWebsite
      */
-    public function getWebsite() {
+    public function getWebsite() 
+    {
         return $this->getService('website');
     }
     /**
      * Gets the asset manager
      * @return IAssets
      */
-    public function getAssets() {
+    public function getAssets() 
+    {
         return $this->getService('assets');
     }
     /**
      * Gets the response handler
      * @return IResponse
      */
-    public function getResponse() {
+    public function getResponse() 
+    {
         return $this->getService('response');
     }
     /**
      * Gets the view manager
      * @return IView
      */
-    public function getView() {
+    public function getView() 
+    {
         return $this->getService('view');
     }
     /**
      * Gets the logging service
      * @return ILogger
      */
-    public function getLogger() {
+    public function getLogger() 
+    {
         return $this->getService('logger');
     }
     /**
@@ -92,7 +100,8 @@ class Application {
      * @param array $params 
      * @return string
      */
-    public function execute( $controller, $action, $params ) {
+    public function execute( $controller, $action, $params ) 
+    {
         $instance = new $controller( $this );
         return $instance->execute( $action, $params );
     }    
@@ -101,7 +110,8 @@ class Application {
      * @param string $url
      * @param array $params 
      */
-    public function dispatch( $url, $params ) {        
+    public function dispatch( $url, $params ) 
+    {        
         try {
             $this->base_dir = substr(
                 $_SERVER['SCRIPT_NAME'], 0, 
@@ -151,7 +161,8 @@ class Application {
 /**
  * The service interface
  */
-interface IService {
+interface IService 
+{
     /**
      * Gets the current application
      * @return Application
@@ -161,7 +172,8 @@ interface IService {
 /**
  * The website configuration layer
  */
-interface IWebsite extends IService {
+interface IWebsite extends IService 
+{
     /**
      * Check if the specified configuration key is defined
      * @param string $key
@@ -235,7 +247,8 @@ interface IWebsite extends IService {
 /**
  * The router interface
  */
-interface IRouter extends IService {
+interface IRouter extends IService 
+{
 /**
      * Retrieves a list of routes from the configuration
      * @return array
@@ -251,7 +264,8 @@ interface IRouter extends IService {
 /**
  * The view interface
  */
-interface IView extends IService {
+interface IView extends IService 
+{
     /**
      * Sets the main layout 
      * @return IView
@@ -298,7 +312,8 @@ interface IView extends IService {
 /**
  * The assets manager structure
  */
-interface IAssets extends IService {
+interface IAssets extends IService 
+{
     /**
      * Check if the specified package is defined
      * @param string $package 
@@ -338,7 +353,8 @@ interface IAssets extends IService {
 /**
  * Services interfaces
  */
-interface IResponse extends IService {
+interface IResponse extends IService 
+{
     /**
      * Sets the response code
      */
@@ -355,7 +371,8 @@ interface IResponse extends IService {
 /**
  * The logger interface
  */
-interface ILogger extends IService {
+interface ILogger extends IService 
+{
     /**
      * Logs debug infos
      */
@@ -401,7 +418,8 @@ interface ILogger extends IService {
 /**
  * The error handler
  */
-interface IErrorHandler {
+interface IErrorHandler 
+{
     /**
      * Attach an logger and starts watching errors
      */
@@ -419,28 +437,29 @@ interface IErrorHandler {
 /**
  * Inner service class (automatically loaded)
  */
-class Service implements IService {    
+class Service implements IService 
+{    
     /**
      * @var Application
      */
-    protected $app;
+    protected $_app;
     /**
      * Initialize the service
      * @param Application $app 
      */
     final public function __construct( Application $app ) {
-        $this->app = $app;
-        $this->onStart();
+        $this->_app = $app;
+        $this->_onStart();
     }
     /**
      * Hook for the service starting
      */
-    protected function onStart() { }
+    protected function _onStart() { }
     /**
      * Gets the current application
      * @return Application 
      */
     final public function getApplication() {
-        return $this->app;
+        return $this->_app;
     }
 }
