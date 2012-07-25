@@ -8,22 +8,24 @@ use \beaba\core;
  */
 class errors extends \beaba\core\Controller {
     public function show( $args ) {
-        $this->app->getView()->setLayout('simple.phtml');
+        $this->_app->getView()->setLayout('simple.phtml');
         if ( $args['error'] instanceof core\Exception ) {
-            $this->app->getService('response')->setCode(
-                $args['error']->getCode(), $args['error']->getHttpMessage()
-            );
+            $code = $args['error']->getCode();
+            $title = $args['error']->getHttpMessage();
         } else {
-            $this->app->getService('response')->setCode(
-                500, 'Internal Error'
-            );
+            $code = 500;
+            $title = 'Internal Error';
         }
-        if ( $args['error']->getCode() === 404 ) {
-            $this->app->getView()->push(
+        $this->_app->getService('response')->setCode(
+            $code, $title
+        );
+        $this->_app->getWebsite()->setTitle( $code . ' - ' . $title );
+        if ( $code === 404 ) {
+            $this->_app->getView()->push(
                 'content', 'errors/not-found.phtml', $args['error']
             );            
         } else {
-            $this->app->getView()->push(
+            $this->_app->getView()->push(
                 'content', 'errors/internal.phtml', $args['error']
             );            
         }
