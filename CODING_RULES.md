@@ -4,10 +4,10 @@ Coding Rules
 1. Coding conventions
 ---------------------
 
-To keep the code clear, I've choose the Zend Coding Conventions :
+To keep the code clear, I've choose the Zend Coding Conventions :<br />
 http://framework.zend.com/manual/en/coding-standard.coding-style.html
 
-For NetBeans IDE, you can enable automatic formating with the following 
+For NetBeans IDE, you can enable automatic formating with the following<br /> 
 configuration :
 
 Go to : Tools / Options / Editor icon / Formatting Tab
@@ -16,19 +16,19 @@ Languages Combo : PHP
 
 * Category : Tabs And indents
 
-Check Override global options
-Check expand tabs to spaces
-Number of spaces per indent : 4
-Tab size                    : 4
-Margin size                 : 80
-Initial indentation         : 0
-Continuation indentation    : 4
-Array declaration indent    : 4
+Check Override global options<br />
+Check expand tabs to spaces<br />
+Number of spaces per indent : 4<br />
+Tab size                    : 4<br />
+Margin size                 : 80<br />
+Initial indentation         : 0<br />
+Continuation indentation    : 4<br />
+Array declaration indent    : 4<br />
 
 * Category : Braces
 
-Class Declaration           : New line
-Method Declaration          : New line
+Class Declaration           : New line<br />
+Method Declaration          : New line<br />
 
 To use the automatic formating : ALT+SHIFT+F
 
@@ -39,6 +39,6 @@ To use the automatic formating : ALT+SHIFT+F
 - Follow the S.O.L.I.D rules
 - Avoid using statics or globals, they are evil
 
-The *MOST* important rule is O.C.P : you never should change
+The *MOST* important rule is O.C.P : you never should change<br />
 the code to modify its behavior or add a new functionality.
 
