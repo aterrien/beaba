@@ -42,3 +42,35 @@ To use the automatic formating : ALT+SHIFT+F
 The *MOST* important rule is O.C.P : you never should change<br />
 the code to modify its behavior or add a new functionality.
 
+3. Classes coding
+-----------------
+
+Avoid using false to indicate that the called method was failed. Always 
+throw an exception based error. Try to not use directly exception. Take a 
+look at SPL exceptions.
+
+Never return void after an action, return current object, thats will enable
+call chains.
+
+Example :
+
+    class Foo 
+    {
+        // do not do this :
+        public function doBadBar() 
+        {
+            if ( perform() ) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        // should do this :
+        public function doGoodBar() {
+            if ( !perform() ) {
+                throw new LogicalException('Could not perform');
+            }
+            return $this;
+        }
+    }
