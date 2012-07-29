@@ -55,11 +55,15 @@ class Application extends Event
      */
     public function __construct( array $config = null ) 
     {
+        // initialize the configuration layer
         $this->config = new Configuration( $config );
+        // initialize the event handler
         parent::__construct($this);
+        // attach core default services : error manager + logger
         $this->getService('errors')->attach(
             $this->getService('logger')
         );
+        // raise the application start event
         $this->_raise( self::E_LOAD );
     }
     /**

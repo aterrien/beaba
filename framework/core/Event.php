@@ -1,7 +1,5 @@
 <?php
-
 namespace beaba\core;
-
 /**
  * This file is distributed under the MIT Open Source
  * License. See README.MD for details.
@@ -34,15 +32,18 @@ class Event
     {
         $class = get_class($this);
         $results = array();
-        foreach( 
-            $this->_app->config->getConfig(
-                'events/' . strtr($class, '\\', '/')
-            ) as $listener 
-        ) {
-            if (is_array($listener)) {
-                $results[] = call_user_func_array($listener, array($this, $args));
-            } else {
-                $results[] = $listener($this, $args);
+        $events = $this->_app->config->getConfig(
+            'events/' . strtr($class, '\\', '/')
+        );
+        if ( !empty($events[ $event ]) ) {
+            foreach( 
+                $events[ $event ] as $listener 
+            ) {
+                if (is_array($listener)) {
+                    $results[] = call_user_func_array($listener, array($this, $args));
+                } else {
+                    $results[] = $listener($this, $args);
+                }            
             }            
         }
         return $results;
