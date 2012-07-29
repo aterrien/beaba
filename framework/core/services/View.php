@@ -19,7 +19,7 @@ class View extends core\Service implements core\IView
     protected function _onStart() 
     {
         parent::_onStart();
-        foreach( $this->_app->getWebsite()->getConfig('assets') as $asset ) {
+        foreach( $this->_app->getInfos()->getConfig('assets') as $asset ) {
             $this->_app->getAssets()->attach( $asset );
         }
     }
@@ -139,7 +139,7 @@ class View extends core\Service implements core\IView
             return $this->render( $this->_template );
         } else {
             return $this->render( 
-                $this->_app->getWebsite()->getTemplate() 
+                $this->_app->getInfos()->getTemplate() 
             );
         }        
     }
@@ -157,7 +157,7 @@ class View extends core\Service implements core\IView
         }
         $this->_flagRender = true;
         if ( !$this->_layout ) 
-            $this->_layout = $this->_app->getWebsite()->getLayout();
+            $this->_layout = $this->_app->getInfos()->getLayout();
         // load the layout default configuration
         $config = merge_array(
             $this->_app->config->getConfig('layouts'), 

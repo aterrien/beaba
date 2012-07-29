@@ -6,7 +6,7 @@ use \beaba\core;
  * License. See README.MD for details.
  * @author Ioan CHIRIAC
  */
-class Website  extends core\Service implements core\IWebsite 
+class Infos  extends core\Service implements core\IInfos
 {
     protected $_config;
     /**
@@ -17,7 +17,7 @@ class Website  extends core\Service implements core\IWebsite
     public function hasConfig( $key ) 
     {
         if ( !$this->_config ) {
-            $this->_config =  $this->_app->config->getConfig( 'website' );
+            $this->_config =  $this->_app->config->getConfig( 'infos' );
         }
         return isset( $this->_config[ $key ] );
     }
@@ -30,7 +30,7 @@ class Website  extends core\Service implements core\IWebsite
     {
         if ( !$this->hasConfig( $key ) ) {
             throw new \OutOfRangeException(
-              'Undefined website config : ' . $key
+              'Undefined infos : ' . $key
             );            
         }
     }
@@ -53,7 +53,7 @@ class Website  extends core\Service implements core\IWebsite
     public function setConfig( $key, $value ) 
     {
         if ( !$this->_config ) {
-            $this->_config = $this->_app->config->getConfig( 'website' ) ;
+            $this->_config = $this->_app->config->getConfig( 'infos' ) ;
         }        
         if ( 
            is_array($value) 
@@ -66,7 +66,7 @@ class Website  extends core\Service implements core\IWebsite
         }        
     }
     /**
-     * Gets the website name
+     * Gets the application name
      * @return string
      */
     public function getName() 
@@ -74,7 +74,7 @@ class Website  extends core\Service implements core\IWebsite
         return $this->getConfig( 'name' );
     }
     /**
-     * Sets the current website name
+     * Sets the current application name
      * @param string $value 
      */
     public function setName( $value ) 

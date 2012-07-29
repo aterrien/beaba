@@ -94,12 +94,12 @@ class Application extends Event
         return $this->_instances[ $name ];
     }   
     /**
-     * Gets the website configuration layer
-     * @return IWebsite
+     * Gets the informations layer
+     * @return IInfos
      */
-    public function getWebsite() 
+    public function getInfos() 
     {
-        return $this->getService('website');
+        return $this->getService('infos');
     }
     /**
      * Gets the asset manager
@@ -239,9 +239,9 @@ interface IPlugins extends IService
 }
 
 /**
- * The website configuration layer
+ * The informations layer
  */
-interface IWebsite extends IService 
+interface IInfos extends IService 
 {
     /**
      * Check if the specified configuration key is defined
@@ -263,12 +263,12 @@ interface IWebsite extends IService
      */
     public function setConfig( $key, $value );
     /**
-     * Gets the website name
+     * Gets the application name
      * @return string
      */
     public function getName();
     /**
-     * Sets the current website name
+     * Sets the current application name
      * @param string $value 
      */
     public function setName( $value );

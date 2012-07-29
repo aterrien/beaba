@@ -3,7 +3,7 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">        
-        <title><?php echo $app->getWebsite()->getTitle(); ?></title>
+        <title><?php echo $app->getInfos()->getTitle(); ?></title>
         <?php foreach($app->getAssets()->getCss() as $css) { ?>
         <link rel="stylesheet" href="<?php echo $css; ?>" />
         <?php } ?>
