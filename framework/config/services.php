@@ -6,5 +6,6 @@ return array(
     'logger'    => 'beaba\\core\\services\\Logger',
     'assets'    => 'beaba\\core\\services\\Assets',
     'view'      => 'beaba\\core\\services\\View',
-    'website'   => 'beaba\\core\\services\\Website'
+    'website'   => 'beaba\\core\\services\\Website',
+    'plugins'    => 'beaba\\core\\services\\Plugins'
 );
