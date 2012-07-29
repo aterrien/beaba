@@ -20,5 +20,5 @@ require_once BEABA_PATH . '/bootstrap.php';
 $app = new beaba\core\Application();
 $app->dispatch(
     $_SERVER['REQUEST_URI'],
-	$_REQUEST
+    $_REQUEST
 );
