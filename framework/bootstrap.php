@@ -26,6 +26,10 @@ spl_autoload_register(function($class) {
     return class_exists( $class );
 });
 
+// sets default defines
+defined('BEABA_PATH') OR define('BEABA_PATH', __DIR__);
+defined('BEABA_APP') OR define('BEABA_APP', BEABA_PATH . '/../application/');
+
 // include the core build file
 if ( file_exists( BEABA_PATH . '/build.php' ) ) {
     include BEABA_PATH . '/build.php';
