@@ -15,18 +15,22 @@ Example
     <?php
     require_once '../bootstrap.php'; 
     $app = new beaba\core\Application(array(
-        'index' => array(
-            'callback' => function( $app, $args ) {
-                $app->getView()
-                    ->setLayout('empty.phtml')
-                    ->push(
-                        'content',
-                        function( $app, $data ) {
-                            echo 'Hello world';
-                        }
-                    )
-                ;    
-            }
+        'routes' => array(
+            // start routes injections
+            'index' => array(
+                'callback' => function( $app, $args ) {
+                    $app->getView()
+                        ->setLayout('empty.phtml')
+                        ->push(
+                            'content',
+                            function( $app, $data ) {
+                                echo 'Hello world';
+                            }
+                        )
+                    ;    
+                }
+            )
+            // end of routes injection
         )
     ));
     $app->dispatch(
