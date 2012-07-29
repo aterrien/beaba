@@ -11,7 +11,6 @@ use \beaba\core;
 class Website  extends core\Service implements core\IWebsite 
 {
     protected $_config;
-    protected $_filename = 'config/website.php';
     /**
      * Check if the specified configuration key is defined
      * @param string $key
@@ -20,7 +19,7 @@ class Website  extends core\Service implements core\IWebsite
     public function hasConfig( $key ) 
     {
         if ( !$this->_config ) {
-            $this->_config =  get_include( $this->_filename );
+            $this->_config =  $this->_app->config->getConfig( 'website' );
         }
         return isset( $this->_config[ $key ] );
     }
@@ -56,7 +55,7 @@ class Website  extends core\Service implements core\IWebsite
     public function setConfig( $key, $value ) 
     {
         if ( !$this->_config ) {
-            $this->_config =  get_include( $this->_filename );
+            $this->_config = $this->_app->config->getConfig( 'website' ) ;
         }        
         if ( 
            is_array($value) 

@@ -20,10 +20,7 @@ class Router extends core\Service implements core\IRouter
     public function getRoutes() 
     {
         if ( !$this->_routes ) {
-            $this->_routes = merge_array(
-                get_include('config/routes.php'),
-                $this->_app->routes
-            );
+            $this->_routes = $this->_app->config->getConfig('routes');
         }
         return $this->_routes;
     }       

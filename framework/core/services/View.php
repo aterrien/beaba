@@ -110,7 +110,7 @@ class View extends core\Service implements core\IView
             return ob_get_clean();
         }
         // check for a file include
-        $target = 'views/' . $file;
+        $target = 'views/' . $file . '.phtml';
         $app = $this->_app;
         $data = $this->getDatasource($datasource);
         if ( !file_exists( $target ) ) {
@@ -160,8 +160,8 @@ class View extends core\Service implements core\IView
             $this->_layout = $this->_app->getWebsite()->getLayout();
         // load the layout default configuration
         $config = merge_array(
-            get_include( 'config/layouts.php' ), 
-            get_include( 'config/layouts/' . $this->_layout )
+            $this->_app->config->getConfig('layouts'), 
+            $this->_app->config->getConfig('layouts/' . $this->_layout )
         );
         foreach( $config as $zone => $widgets ) {
             foreach( $widgets as $widget ) {

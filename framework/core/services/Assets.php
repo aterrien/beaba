@@ -17,7 +17,7 @@ class Assets extends core\Service implements core\IAssets
      */
     public function hasConfig( $package ) 
     {
-        if ( !$this->_config ) $this->_config = get_include('config/assets.php');
+        if ( !$this->_config ) $this->_config = $this->_app->config->getConfig('assets');
         return isset( $this->_config[ $package ] );
     }
     /**
