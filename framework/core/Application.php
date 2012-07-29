@@ -41,25 +41,21 @@ class Application extends Event
      */
     protected $_instances = array();
     /**
+     * The current configuration instance
+     * @var Configuration
+     */
+    public $config;
+    /**
      * The website base dir
      * @var string 
      */
     public $base_dir;
     /**
-     * Defines a list of customized routes
-     * @var array
-     */
-    public $routes;
-    /**
      * Initialize the application
      */
-    public function __construct( array $routes = null ) 
+    public function __construct( array $config = null ) 
     {
-        if ( $routes ) {
-            $this->routes = $routes;
-        } else {
-            $this->routes = array();
-        }
+        $this->config = new Configuration( $config );
         $this->getService('errors')->attach(
             $this->getService('logger')
         );
@@ -81,7 +77,7 @@ class Application extends Event
     {
         if ( !isset( $this->_instances[ $name ] ) ) {
             if (!$this->_services) {
-                $this->_services = get_include('config/services.php');
+                $this->_services = $this->config->getConfig('services');
             }
             if ( !isset( $this->_services[ $name ]) ) {
                 throw new \Exception(
@@ -229,6 +225,14 @@ interface IService
      */
     function getApplication();
 }
+/**
+ * 
+ */
+interface IPlugins extends IService 
+{
+    
+}
+
 /**
  * The website configuration layer
  */
@@ -497,8 +501,12 @@ interface IErrorHandler
 /**
  * Inner service class (automatically loaded)
  */
-class Service implements IService 
+class Service extends Event implements IService 
 {    
+    /**
+     * on service starts
+     */
+    const E_LOAD = 'onLoad';
     /**
      * @var Application
      */
@@ -514,7 +522,9 @@ class Service implements IService
     /**
      * Hook for the service starting
      */
-    protected function _onStart() { }
+    protected function _onStart() { 
+        $this->_raise( self::E_LOAD );
+    }
     /**
      * Gets the current application
      * @return Application 
