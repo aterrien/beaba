@@ -10,6 +10,9 @@
 spl_autoload_register(function($class) {
     $location = explode('\\', $class, 2);
     switch( $location[0] ) {
+        case 'local':
+            include './' . strtr($location[1], '\\', '/') . '.php';
+            break;
         case 'application':
             include BEABA_APP . '/' . strtr($location[1], '\\', '/') . '.php';
             break;
@@ -23,9 +26,20 @@ spl_autoload_register(function($class) {
     return class_exists( $class );
 });
 
-// include the build file
+// include the core build file
 if ( file_exists( BEABA_PATH . '/build.php' ) ) {
     include BEABA_PATH . '/build.php';
+    defined('BEABA_BUILD_CORE') OR define('BEABA_BUILD_CORE', true);
+} else {
+    define('BEABA_BUILD_CORE', false);
+}
+
+// include the application build file
+if ( defined('BEABA_APP') && file_exists( BEABA_APP . '/build.php' ) ) {
+    include BEABA_APP . '/build.php';
+    defined('BEABA_BUILD_APP') OR define('BEABA_BUILD_APP', true);
+} else {
+    define('BEABA_BUILD_APP', false);
 }
 
 /**
@@ -46,27 +60,4 @@ function merge_array( $original, $additionnal ) {
         }
     }
     return $original;    
-}
-
-/**
- * Includes a list of files and retrieves theirs merged results
- * @param string $target 
- * @return array
- */
-function get_include( $target ) {
-    $result = array();
-    $callback = strtr($target, '/.', '__');
-    if (function_exists($callback) ) {
-        $result = $callback();
-    }
-    if ( file_exists( $target ) ) {
-        $result = merge_array(include($target), $result);
-    }
-    if ( file_exists( BEABA_APP . '/' . $target ) ) {
-        $result = merge_array(include( BEABA_APP . '/' . $target ), $result);
-    }
-    if ( file_exists( BEABA_PATH . '/' . $target ) ) {
-        $result = merge_array(include( BEABA_PATH . '/' . $target ), $result);
-    }
-    return $result;
 }
