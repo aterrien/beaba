@@ -56,6 +56,7 @@ class Application extends Event
     public function __construct( array $config = null ) 
     {
         $this->config = new Configuration( $config );
+        parent::__construct($this);
         $this->getService('errors')->attach(
             $this->getService('logger')
         );
@@ -508,15 +509,11 @@ class Service extends Event implements IService
      */
     const E_LOAD = 'onLoad';
     /**
-     * @var Application
-     */
-    protected $_app;
-    /**
      * Initialize the service
      * @param Application $app 
      */
     final public function __construct( Application $app ) {
-        $this->_app = $app;
+        parent::__construct($app);
         $this->_onStart();
     }
     /**
