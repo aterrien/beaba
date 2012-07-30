@@ -1,5 +1,5 @@
-beaba
-=====
+# beaba
+
 
 BEABA is a lightweight MVC framework written in PHP :
 
@@ -9,60 +9,63 @@ BEABA is a lightweight MVC framework written in PHP :
 - 100% extensible & configurable
 - light cook-book documentation
 
-Example
--------
+## Example
 
-    <?php
-    require_once '../bootstrap.php'; 
-    $app = new beaba\core\Application(array(
-        'routes' => array(
-            // start routes injections
-            'index' => array(
-                'callback' => function( $app, $args ) {
-                    $app->getView()
-                        ->setLayout('empty.phtml')
-                        ->push(
-                            'content',
-                            function( $app, $data ) {
-                                echo 'Hello world';
-                            }
-                        )
-                    ;    
-                }
-            )
-            // end of routes injection
+``` php
+<?php
+require_once '../bootstrap.php'; 
+$app = new beaba\core\Application(array(
+    'routes' => array(
+        // start routes injections
+        'index' => array(
+            'callback' => function( $app, $args ) {
+                $app->getView()
+                    ->setLayout('empty.phtml')
+                    ->push(
+                        'content',
+                        function( $app, $data ) {
+                            echo 'Hello world';
+                        }
+                    )
+                ;    
+            }
         )
-    ));
-    $app->dispatch(
-    	$_SERVER['REQUEST_URI'],
-    	$_REQUEST
-    );    
-    ?>
+        // end of routes injection
+    )
+));
+$app->dispatch(
+	$_SERVER['REQUEST_URI'],
+	$_REQUEST
+);
+```
     
-Install
--------
+## Install
 
 1. Download this this project
 
 2. Create an apache vhost :
-<pre><code>&lt;VirtualHost *:80&gt;
-        ServerAdmin dev.beaba@localhost.dev
-        ServerName beaba.localhost.dev
-        DocumentRoot /var/www/beaba/public/
-    &lt;/VirtualHost&gt;
-    &lt;Directory /var/www/beaba/public/&gt;
-        RewriteEngine on
-        RewriteCond %{REQUEST_FILENAME} !-f
-        RewriteCond %{REQUEST_FILENAME} !-d
-        RewriteRule ^(.*)$ index.php?p=$1& [QSA,L]         
-    &lt;/Directory&gt;
-</code></pre>
+```xml
+<VirtualHost *:80>
+    ServerAdmin dev.beaba@localhost.dev
+    ServerName beaba.localhost.dev
+    DocumentRoot /var/www/beaba/public/
+</VirtualHost>
+<Directory /var/www/beaba/public/>
+    AllowOverride all
+    Order Deny,Allow
+    Allow from all  
+    RewriteEngine on
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^(.*)$ index.php?p=$1& [QSA,L]         
+</Directory>
+```
+
 3. Add to the domain to /etc/hosts
 
-    <code>$ echo "127.0.0.1 beaba.localhost.dev" &gt;&gt; /etc/hosts</code>
+    `$ echo "127.0.0.1 beaba.localhost.dev" >> /etc/hosts`
 
-MIT License
-===========
+# MIT License
 
 Copyright (C) <2012> <PHP Hacks Team : http://coderwall.com/team/php-hacks>
 
