@@ -51,7 +51,10 @@ class Batch extends Application
                 'error' => $ex
                 )
             );
-            $this->getLogger()->error( $ex );
+            $this->getLogger()->error( "\n" . $ex->getMessage() );
+            $this->getLogger()->info( "\n" . $ex->getFile() . ' at ' . $ex->getLine() );
+            $this->getResponse()->write("\n\n" . 'Program exit with a fatal error - CODE(1)' . "\n\n");
+            $this->getLogger()->warning( "\n" . $ex->getTraceAsString() );
             exit(1);
         }
     }
