@@ -1,5 +1,5 @@
-beaba
-=====
+# beaba
+
 
 BEABA is a lightweight MVC framework written in PHP :
 
@@ -9,8 +9,7 @@ BEABA is a lightweight MVC framework written in PHP :
 - 100% extensible & configurable
 - light cook-book documentation
 
-Example
--------
+## Example
 
 ``` php
 <?php
@@ -40,8 +39,7 @@ $app->dispatch(
 );
 ```
     
-Install
--------
+## Install
 
 1. Download this this project
 
@@ -65,10 +63,9 @@ Install
 
 3. Add to the domain to /etc/hosts
 
-    `$ echo "127.0.0.1 beaba.localhost.dev" &gt;&gt; /etc/hosts`
+    `$ echo "127.0.0.1 beaba.localhost.dev" >> /etc/hosts`
 
-MIT License
-===========
+# MIT License
 
 Copyright (C) <2012> <PHP Hacks Team : http://coderwall.com/team/php-hacks>
 
