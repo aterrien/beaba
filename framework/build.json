@@ -1,0 +1,28 @@
+{
+     "target"   : "${BEABA_PATH}/build.php"
+    ,"format"   : true
+    ,"comments" : true
+    ,"files"    : [
+        "${BEABA_PATH}/core/Application.php",
+        "${BEABA_PATH}/core/Configuration.php",
+        "${BEABA_PATH}/core/Controller.php",
+        "${BEABA_PATH}/core/Event.php",
+        "${BEABA_PATH}/core/services/Assets.php",
+        "${BEABA_PATH}/core/services/Cache.php",
+        "${BEABA_PATH}/core/services/ErrorHandler.php",
+        "${BEABA_PATH}/core/services/HttpRequest.php",
+        "${BEABA_PATH}/core/services/Infos.php",
+        "${BEABA_PATH}/core/services/Logger.php",
+        "${BEABA_PATH}/core/services/Plugins.php",
+        "${BEABA_PATH}/core/services/Response.php",
+        "${BEABA_PATH}/core/services/Router.php",
+        "${BEABA_PATH}/core/services/View.php"
+    ]    
+    ,"config"   : [
+        "${BEABA_PATH}/config/assets.php",
+        "${BEABA_PATH}/config/infos.php",
+        "${BEABA_PATH}/config/layouts.php",
+        "${BEABA_PATH}/config/routes.php",
+        "${BEABA_PATH}/config/services.php"
+    ]   
+}
