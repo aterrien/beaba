@@ -1,0 +1,9 @@
+{
+     "target"   : "${BEABA_PATH}/build.php"
+    ,"format"   : true
+    ,"comments" : true
+    ,"files"    : [ ]
+    ,"config"   : [
+        "config/events/beaba/core/Application.php"
+    ]   
+}

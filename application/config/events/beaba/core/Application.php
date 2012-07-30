@@ -1,13 +1,12 @@
 <?php
-use \beaba\core\Application;
 return array(
-    Application::E_LOAD => array(
+    \beaba\core\Application::E_LOAD => array(
         function( Application $sender, $args ) {
             define('APP_START', microtime(true));
         }        
     ),
-    Application::E_AFTER_RENDER => array(
-        function( Application $sender, $args ) {
+    \beaba\core\Application::E_AFTER_RENDER => array(
+        function( \beaba\core\Application $sender, $args ) {
             $body = strpos( $args['response'], '</body>');
             if ( $body !== false ) {
                 // inserting logs
