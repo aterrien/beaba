@@ -11,10 +11,10 @@ BEABA is a lightweight MVC framework written in PHP :
 
 ## Example
 
-``` php
+```php
 <?php
 require_once '../bootstrap.php'; 
-$app = new beaba\core\Application(array(
+$app = new beaba\core\WebApp(array(
     'routes' => array(
         // start routes injections
         'index' => array(
@@ -38,7 +38,7 @@ $app->dispatch(
 	$_REQUEST
 );
 ```
-    
+
 ## Install
 
 1. Download this this project
