@@ -227,6 +227,14 @@ interface IService
 /**
  * 
  */
+interface ICache extends IService
+{
+    
+}
+
+/**
+ * 
+ */
 interface IPlugins extends IService
 {
     
