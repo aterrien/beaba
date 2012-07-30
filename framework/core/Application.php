@@ -7,7 +7,7 @@ namespace beaba\core;
  * License. See README.MD for details.
  * @author Ioan CHIRIAC
  */
-class Application extends Event
+abstract class Application extends Event
 {
     /**
      * the application start
@@ -166,77 +166,47 @@ class Application extends Event
      * Dispatching the specified request
      * @param string $url
      * @param array $params 
+     * @throws \Exception
      */
     public function dispatch($url = null, array $params = null)
     {
-        try {
-            $params = $params ?
-                merge_array(
-                    $this->getRequest()->getParameters(), $params
-                ) :
-                $this->getRequest()->getParameters()
-            ;
-            $this->_raise(
-                self::E_DISPATCH, array(
-                'request' => $url,
-                'params' => $params
-                )
-            );
-            if (!is_callable($url)) {
-                // initialize parameters
-                if (!is_null($url)) {
-                    $this->getRequest()->setLocation($url);
-                } else {
-                    $url = $this->getRequest()->getLocation();
-                }
-                $route = $this->getService('router')->getRoute($url);
-            } else {
-                $route = $url;
-            }
-            if ($route === false) {
-                throw new Exception('No route found', 404);
-            } else {
-                if (is_string($route)) {
-                    // execute a controller
-                    $parts = explode('::', $route, 2);
-                    if (empty($parts[1]))
-                        $parts[1] = 'index';
-                    $this->execute($parts[0], $parts[1], $params);
-                } else {
-                    // use the route as a callback
-                    $route($this, $params);
-                }
-            }
-        } catch (\Exception $ex) {
-            $this->_raise(
-                self::E_ERROR, array(
-                'request' => $url,
-                'params' => $params,
-                'error' => $ex
-                )
-            );
-            if ($ex instanceof Exception && !$ex->isHttpError()) {
-                $this->getService('response')->setCode(
-                    $ex->getCode(), $ex->getHttpMessage()
-                );
-            } else {
-                $this->execute(
-                    'beaba\\controllers\\errors', 'show', array(
-                    'request' => $url,
-                    'params' => $params,
-                    'error' => $ex
-                    )
-                );
-            }
-        }
-        $this->_raise(self::E_BEFORE_RENDER);
-        $response = $this->getView()->renderTemplate();
+        $params = $params ?
+            merge_array(
+                $this->getRequest()->getParameters(), $params
+            ) :
+            $this->getRequest()->getParameters()
+        ;
         $this->_raise(
-            self::E_AFTER_RENDER, array(
-            'response' => &$response
+            self::E_DISPATCH, array(
+            'request' => $url,
+            'params' => $params
             )
         );
-        $this->getResponse()->write($response);
+        if (!is_callable($url)) {
+            // initialize parameters
+            if (!is_null($url)) {
+                $this->getRequest()->setLocation($url);
+            } else {
+                $url = $this->getRequest()->getLocation();
+            }
+            $route = $this->getService('router')->getRoute($url);
+        } else {
+            $route = $url;
+        }
+        if ($route === false) {
+            throw new Exception('No route found', 404);
+        } else {
+            if (is_string($route)) {
+                // execute a controller
+                $parts = explode('::', $route, 2);
+                if (empty($parts[1]))
+                    $parts[1] = 'index';
+                $this->execute($parts[0], $parts[1], $params);
+            } else {
+                // use the route as a callback
+                $route($this, $params);
+            }
+        }
     }
 
 }
