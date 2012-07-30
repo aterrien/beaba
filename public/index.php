@@ -17,8 +17,5 @@ defined('BEABA_APP') OR define(
 require_once BEABA_PATH . '/bootstrap.php';
 
 // LOADS AN APPLICATION INSTANCE
-$app = new beaba\core\Application();
-$app->dispatch(
-    $_SERVER['REQUEST_URI'],
-    $_REQUEST
-);
+$app = new beaba\core\WebApp();
+$app->dispatch();
