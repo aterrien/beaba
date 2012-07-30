@@ -15,7 +15,11 @@ class Response extends core\Service implements core\IResponse
     }
     public function writeLine( $message ) 
     {
-        echo $message . '<br />';
+        if ( $this->_app->getRequest()->getResponseType() === 'html' ) {
+            echo $message . '<br />'."\n";
+        } else {
+            echo $message . "\n";
+        }        
     }
     public function write( $message ) 
     {
