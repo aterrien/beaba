@@ -25,6 +25,12 @@ $app = new beaba\core\Batch(
                 'alias'         => 't',
                 'required'      => true
             ),
+            'basedir'  => array(
+                'title'         => 'The building directory',
+                'type'          => 'directory',
+                'alias'         => 'd',
+                'required'      => true
+            ),
             'files'   => array(
                 'title'         => 'List of files to build',
                 'type'          => 'files',
@@ -36,7 +42,13 @@ $app = new beaba\core\Batch(
                 'type'          => 'files',
                 'alias'         => 'c',
                 'required'      => true
-            ),            
+            ),
+            'prefix'  => array(
+                'title'         => 'The configuration prefix : core, app, local',
+                'type'          => 'string',
+                'alias'         => 'p',
+                'required'      => true
+            ),
             'format'  => array(
                 'title'         => 'Format the php code',
                 'type'          => 'flag',
@@ -51,8 +63,116 @@ $app = new beaba\core\Batch(
     )
 );
 // RUN THE SCRIPT
-$app->dispatch(function( $app, $args ) {
-    echo ' ... run into :)';
-    print_r( $args );
+$app->dispatch(function( beaba\core\Batch $app, $args ) {
+    $out = $app->getResponse();
+    $f = fopen($args['target'] . '.tmp', 'w+');
+    fwrite( $f, '<?php // BUILD ' . date('Y-m-d H:i:s') . "\n");
+    $out->writeLine('Building classes');
+    foreach( $args['files'] as $target ) {
+        $out->writeLine( ' - ' . $target );
+        buildFile( 
+            $f, $target, 
+            $args['comments'], $args['format']
+        );
+    }
+    $out->writeLine('Building the configuration');
+    foreach( $args['config'] as $target ) {
+        $file = $args['basedir'] . '/config/' . $target . '.php';
+        $out->writeLine( ' - ' . $file );
+        buildConfig( 
+            $f, $file, $target, 
+            $args['prefix'], $args['comments']
+        );
+    }
+    fclose($f);
+    rename( $args['target'] . '.tmp', $args['target'] );
     exit(0);
 });
+
+/**
+ * Build the specified configuration file
+ * @param type $f
+ * @param type $file 
+ */
+function buildConfig( $f, $file, $name, $prefix, $comments ) {
+    $tokens = token_get_all( file_get_contents($file) );
+    if ( $tokens[0][0] !== T_OPEN_TAG ) {
+        throw new Exception(
+            'Bad ' . $file . ' format, expecting an OPEN_TAG'
+        );
+    }
+    $tsize = count( $tokens );
+    for( $offset = 1; $offset < $tsize; $offset ++ ) {
+        if ( is_array($tokens[$offset]) && $tokens[$offset][0] === T_RETURN ) {
+            break;
+        }
+    }
+    
+    if ( $tokens[$offset][0] !== T_RETURN ) {
+        throw new Exception(
+            'Bad ' . $file . ' format, expecting an RETURN'
+        );
+    }
+    
+    fwrite($f, '// ' . $file . "\n");
+    fwrite($f, 'function config_' . $prefix . '_' . strtr($name, '/.', '__') );
+    fwrite($f, '() { ' . "\n");
+    for( $i = $offset; $i < $tsize; $i ++ ) {
+        $tok = $tokens[$i];
+        if ( is_array($tok) ) {
+            if ( !$comments || ($tok[0] !== T_DOC_COMMENT && $tok[0] !== T_COMMENT) ) {
+                fwrite( $f, $tok[1]);
+            }
+        } else {
+            fwrite( $f, $tok );
+        }
+    }
+    fwrite($f, '}' . "\n");
+}
+/**
+ * Build the specified php script
+ * @param type $f
+ * @param type $file
+ * @param type $comments
+ * @param type $format 
+ */
+function buildFile( $f, $file, $comments, $format) {
+    $tokens = token_get_all( file_get_contents($file) );
+    if ( $tokens[0][0] !== T_OPEN_TAG ) {
+        throw new Exception(
+            'Bad ' . $file . ' format, expecting an OPEN_TAG'
+        );
+    }
+    array_shift( $tokens );
+    fwrite($f, '// ' . $file . "\n");
+    $allow = false;
+    $level = 0;
+    $tsize = count($tokens);
+    for( $i = 0; $i < $tsize; $i++) {
+        $tok = $tokens[$i];
+        if ( is_array($tok) ) {
+            if ( $format && $tok[0] === T_WHITESPACE ) {
+                if (strpos($tok[1], "\n") !== false ) {
+                    if ( !$allow ) {
+                        $tok[1] = '';
+                    } else {
+                        $allow = false;
+                        if ( $i + 1 < $tsize && $tokens[$i + 1] == '}' ) $level --;
+                        $tok[1] = "\n" . str_repeat(' ', $level * 4);
+                    }
+                }
+            }
+            if ( !$comments || ($tok[0] !== T_DOC_COMMENT && $tok[0] !== T_COMMENT) ) {
+                fwrite( $f, $tok[1]);
+            }
+        } else {
+            if ( $format ) {
+                if ( $tok == '{' || $tok == ';' || $tok == '}' ) {
+                    if ( $tok == '{' ) $level ++;
+                    $allow = true;
+                }
+            }
+            fwrite( $f, $tok);
+        }
+    }
+}
