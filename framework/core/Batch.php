@@ -1,0 +1,58 @@
+<?php
+namespace beaba\core;
+/**
+ * This file is distributed under the MIT Open Source
+ * License. See README.MD for details.
+ * @author Ioan CHIRIAC
+ */
+class Batch extends Application
+{
+    /**
+     * Initialize the batch mode
+     * @param array $config 
+     */
+    public function __construct( array $config = null ) {
+        parent::__construct( $config );
+        // the default batch header
+        $this->getResponse()->writeLine(
+            'Command Line Tool for : ' . 
+            $this->getInfos()->getName() . 
+            ' - by ' . 
+            $this->getInfos()->getConfig('author')
+        );
+        $this->getResponse()->writeLine(
+            str_repeat('=', 70)
+        );
+        $this->getResponse()->writeLine(
+            $this->getInfos()->getDescription()
+        );
+        $this->getResponse()->writeLine(
+            'type --help for more infos'
+        );
+        $this->getResponse()->writeLine(null);
+        // clean the template output
+        $this->getView()->setTemplate('empty');        
+    }
+    /**
+     * Dispatching the specified request
+     * @param string $url
+     * @param array $params 
+     */
+    public function dispatch($url = null, array $params = null)
+    {
+        try {
+            parent::dispatch($url, $params);
+            exit(0);
+        } catch( \Exception $ex ) {
+            $this->_raise(
+                self::E_ERROR, array(
+                'request' => $url,
+                'params' => $params,
+                'error' => $ex
+                )
+            );
+            $this->getLogger()->error( $ex );
+            exit(1);
+        }
+    }
+}
