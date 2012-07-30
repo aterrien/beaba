@@ -25,14 +25,14 @@ class errors extends \beaba\core\Controller
         $this->_app->getService('response')->setCode(
             $code, $title
         );
-        $this->_app->getWebsite()->setTitle($code . ' - ' . $title);
+        $this->_app->getInfos()->setTitle($code . ' - ' . $title);
         if ($code === 404) {
             $this->_app->getView()->push(
-                'content', 'errors/not-found.phtml', $args['error']
+                'content', 'errors/not-found', $args['error']
             );
         } else {
             $this->_app->getView()->push(
-                'content', 'errors/internal.phtml', $args['error']
+                'content', 'errors/internal', $args['error']
             );
         }
     }
