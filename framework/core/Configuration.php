@@ -66,7 +66,7 @@ class Configuration
      */
     protected function _readCallbackConf($prefix, $key)
     {
-        $callback = 'config_' . $prefix . strtr($key, '/.', '__');
+        $callback = 'config_' . $prefix . '_' . strtr($key, '/.', '__');
         return function_exists($callback) ?
             $callback() : false
         ;
@@ -119,15 +119,14 @@ class Configuration
         if (!isset($this->_core[$key])) {
             $this->_core[$key] = array();
             if (BEABA_BUILD_CORE) {
-                $data = $this->_readCallbackConf('local', $key);
-                if ($data !== false)
-                    $this->_core[$key] = merge_array(
-                        $this->_core[$key], $data
-                    );
+                $data = $this->_readCallbackConf('core', $key);
+                if ($data !== false) {
+                    $this->_core[$key] = $data;
+                } else {
+                    $this->_core[$key] = $this->_readFileConf(BEABA_PATH, $key);
+                }
             } else {
-                $this->_core[$key] = merge_array(
-                    $this->_core[$key], $this->_readFileConf(BEABA_PATH, $key)
-                );
+                $this->_core[$key] = $this->_readFileConf(BEABA_PATH, $key);
             }
         }
         return $this->_core[$key];
