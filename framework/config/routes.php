@@ -1,4 +1,7 @@
 <?php
+/**
+ * @read-only true
+ */
 return array(
     'index' => array(
         'check' => array(
