@@ -68,13 +68,17 @@ $app->dispatch(function( beaba\core\Batch $app, $args ) {
     $f = fopen($args['target'] . '.tmp', 'w+');
     fwrite( $f, '<?php // BUILD ' . date('Y-m-d H:i:s') . "\n");
     $out->writeLine('Building classes');
+    $tloc = 0;
     foreach( $args['files'] as $target ) {
-        $out->writeLine( ' - ' . $target );
-        buildFile( 
+        $loc = buildFile( 
             $f, $target, 
             $args['comments'], $args['format']
         );
+        $out->writeLine( ' - ' . $target . ' : ' . $loc );
+        $tloc += $loc;
     }
+    $out->writeLine( 'Lines of code : ' . $tloc . "\n");
+    
     $out->writeLine('Building the configuration');
     foreach( $args['config'] as $target ) {
         $file = $args['basedir'] . '/config/' . $target . '.php';
@@ -148,6 +152,7 @@ function buildFile( $f, $file, $comments, $format) {
     $allow = false;
     $level = 0;
     $tsize = count($tokens);
+    $loc = 0;
     for( $i = 0; $i < $tsize; $i++) {
         $tok = $tokens[$i];
         if ( is_array($tok) ) {
@@ -159,6 +164,7 @@ function buildFile( $f, $file, $comments, $format) {
                         $allow = false;
                         if ( $i + 1 < $tsize && $tokens[$i + 1] == '}' ) $level --;
                         $tok[1] = "\n" . str_repeat(' ', $level * 4);
+                        $loc ++;
                     }
                 }
             }
@@ -175,4 +181,5 @@ function buildFile( $f, $file, $comments, $format) {
             fwrite( $f, $tok);
         }
     }
+    return $loc;
 }
