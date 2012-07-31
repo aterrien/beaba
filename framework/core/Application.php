@@ -225,11 +225,68 @@ interface IService
 }
 
 /**
- * 
+ * Defines a cache providers pool
  */
-interface ICache extends IService
+interface ICachePool extends IService 
 {
+    /**
+     * Gets a cache provider from its configuration key
+     * @param string $name
+     * @return ICacheDriver
+     */
+    function get( $name = null );
     
+    /**
+     * Creates a cache instance for the specified driver
+     * @param string $driver
+     * @param array $conf
+     * @return ICacheDriver
+     */
+    function create( $driver, array $conf = null );
+}
+
+/**
+ * Defines a cache diver
+ */
+interface ICacheDriver extends IService
+{
+    /**
+     * Gets the value from the specified key
+     * @param string $key
+     * @return mixed
+     */
+    function getValue( $key );
+    /**
+     * Get values from the specified keys
+     * @param array $keys
+     * @return array
+     */
+    function getValues( array $keys );
+    /**
+     * Sets a value attached to the specified key
+     * @param string $key
+     * @param mixed $value
+     * @return ICache
+     */
+    function setValue( $key, $value );
+    /**
+     * Set values attaches to specified indexes (keys)
+     * @param array $values
+     * @return ICache
+     */
+    function setValues( $values );
+    /**
+     * Remove the specified key
+     * @param string $key
+     * @return ICache
+     */
+    function unsetValue( $key );
+    /**
+     * Remove the specified keys
+     * @param array $key
+     * @return ICache
+     */
+    function unsetValues( $keys );
 }
 
 /**
