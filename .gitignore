@@ -3,3 +3,4 @@
 /nbproject
 /.settings
 /framework/build.php
+/framework/*.tmp
