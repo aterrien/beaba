@@ -4,3 +4,4 @@
 /.settings
 /framework/build.php
 /framework/*.tmp
+/framework/*.old
