@@ -208,7 +208,6 @@ abstract class Application extends Event
             }
         }
     }
-
 }
 
 /**
@@ -290,12 +289,67 @@ interface ICacheDriver extends IService
 }
 
 /**
- * 
+ * The plugin configuration instance
  */
-interface IPlugins extends IService
+interface IPlugin extends IService
 {
-    
+    /**
+     * when the plugin is enabled
+     */
+    const E_ENABLE      = 'onEnable';
+    /**
+     * when the plugin is disabled
+     */
+    const E_DISABLE     = 'onDisable';
+    /**
+     * Enabled the current plugin to the specified target level
+     * @param string $target
+     * @return IPlugin
+     */
+    function enable( $target = 'core' );
+    /**
+     * Disable the current plugin from the specified target
+     * @param string $target
+     * @return IPlugin
+     */
+    function disable( $target = 'core' );
+    /**
+     *  Check if the current plugin is enabled
+     *  @return boolean
+     */
+    function isEnabled();
+    /**
+     * Gets the current plugin options
+     * @return array
+     */
+    function getOptions();
 }
+
+/**
+ * The plugin manager instance
+ */
+interface IPluginManager extends IService
+{
+    /**
+     * Gets a list of all available plugins
+     * @return array
+     */
+    function getPlugins();
+    
+    /**
+     * Gets a list of enabled plugins
+     * @return array
+     */
+    function getEnabledPlugins();
+    
+    /**
+     * Gets the specified plugin
+     * @param string $name
+     * @return IPlugin
+     */
+    function getPlugin( $name );
+}
+
 
 /**
  * Defines the requesting service
