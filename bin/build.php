@@ -89,7 +89,29 @@ $app->dispatch(function( beaba\core\Batch $app, $args ) {
         );
     }
     fclose($f);
-    rename( $args['target'] . '.tmp', $args['target'] );
+    // check the file syntax
+    ob_start();
+    system( 'php -l '.$args['target'] . '.tmp', $ret );
+    $output = ob_get_clean();
+    if( $ret !== 0 ) {
+        $app->getLogger()->error( $output );
+        exit(1);
+    } else {
+        $out->writeLine( "\n" . $output );
+        ob_start();
+        system( 'php -f '.$args['target'] . '.tmp', $ret );
+        $output = ob_get_clean();
+        if( $ret !== 0 ) {
+            $app->getLogger()->error( $output );
+        } else {
+            $out->writeLine( "\n" . $output );
+            // save the file
+            if ( file_exists($args['target']) ) {
+                rename( $args['target'], $args['target'] . '.old' );
+            }
+            rename( $args['target'] . '.tmp', $args['target'] );
+        }
+    }
     exit(0);
 });
 
