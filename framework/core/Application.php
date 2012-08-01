@@ -346,8 +346,16 @@ interface IPluginManager extends IService
      * Gets the specified plugin
      * @param string $name
      * @return IPlugin
+     * @throws \OutOfBoundsException
      */
     function getPlugin( $name );
+    
+    /**
+     * Check if the specified plugin is enabled or not
+     * @param string $name
+     * @return boolean
+     */
+    function isEnabled( $name );
 }
 
 
@@ -729,7 +737,7 @@ class Service extends Event implements IService
      * Initialize the service
      * @param Application $app 
      */
-    final public function __construct(Application $app)
+    public function __construct(Application $app)
     {
         parent::__construct($app);
         $this->_onStart();
