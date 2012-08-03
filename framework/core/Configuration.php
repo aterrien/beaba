@@ -94,17 +94,9 @@ class Configuration
     public function getLocalConfig($key)
     {
         if (!isset($this->_local[$key])) {
-            $this->_local[$key] = array();
-            $data = $this->_readCallbackConf('local', $key);
-            if ($data !== false) {
-                $this->_local[$key] = merge_array(
-                    $this->_local[$key], $data
-                );
-            } else {
-                $this->_local[$key] = merge_array(
-                    $this->_local[$key], $this->_readFileConf('.', $key)
-                );
-            }
+            $this->_local[$key] = (
+                $data = $this->_readCallbackConf('local', $key)
+            ) ? $data : $this->_readFileConf('.', $key);
         }
         return $this->_local[$key];
     }
@@ -117,17 +109,10 @@ class Configuration
     public function getCoreConfig($key)
     {
         if (!isset($this->_core[$key])) {
-            $this->_core[$key] = array();
-            if (BEABA_BUILD_CORE) {
-                $data = $this->_readCallbackConf('core', $key);
-                if ($data !== false) {
-                    $this->_core[$key] = $data;
-                } else {
-                    $this->_core[$key] = $this->_readFileConf(BEABA_PATH, $key);
-                }
-            } else {
-                $this->_core[$key] = $this->_readFileConf(BEABA_PATH, $key);
-            }
+            $this->_core[$key] = (
+                BEABA_BUILD_CORE && 
+                $data = $this->_readCallbackConf('core', $key)
+            ) ? $data : $this->_readFileConf(BEABA_PATH, $key);
         }
         return $this->_core[$key];
     }
@@ -140,18 +125,10 @@ class Configuration
     public function getAppConfig($key)
     {
         if (!isset($this->_app[$key])) {
-            $this->_app[$key] = array();
-            if (BEABA_BUILD_APP) {
-                $data = $this->_readCallbackConf('app', $key);
-                if ($data !== false)
-                    $this->_app[$key] = merge_array(
-                        $this->_app[$key], $data
-                    );
-            } else {
-                $this->_app[$key] = merge_array(
-                    $this->_app[$key], $this->_readFileConf(BEABA_APP, $key)
-                );
-            }
+            $this->_app[$key] = (
+                BEABA_BUILD_APP && 
+                $data = $this->_readCallbackConf('app', $key)
+            ) ? $data : $this->_readFileConf(BEABA_APP, $key);
         }
         return $this->_app[$key];
     }
