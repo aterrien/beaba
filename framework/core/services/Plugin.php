@@ -63,4 +63,13 @@ class Plugin extends core\Service implements core\IPlugin
         return $this->_config;
     }
 
+    /**
+     * Gets an option value
+     * @param string $name 
+     * @return mixed
+     */
+    public function getOption( $name ) 
+    {
+        return $his->_config[ $name ];
+    }
 }

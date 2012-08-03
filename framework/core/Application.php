@@ -105,6 +105,15 @@ abstract class Application extends Event
     }
 
     /**
+     * Gets the plugins layer
+     * @return IPluginManager
+     */
+    public function getPlugins()
+    {
+        return $this->getService('plugins');
+    }
+
+    /**
      * Gets the asset manager
      * @return IAssets
      */
@@ -323,6 +332,12 @@ interface IPlugin extends IService
      * @return array
      */
     function getOptions();
+    /**
+     * Gets an option value
+     * @param string $name 
+     * @return mixed
+     */
+    function getOption( $name );
 }
 
 /**
