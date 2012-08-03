@@ -52,7 +52,9 @@ if ( defined('BEABA_APP') && file_exists( BEABA_APP . '/build.php' ) ) {
  * @params array $additionnal
  * @return array
  */
-function merge_array( $original, $additionnal ) {
+function merge_array( $original, $additionnal ) 
+{
+    if ( empty($additionnal) ) return $original;
     foreach($additionnal as $key => $value) {
         if ( is_numeric( $key ) ) {
             $original[] = $value;
@@ -60,8 +62,8 @@ function merge_array( $original, $additionnal ) {
             $original[$key] = (
                 isset($original[$key]) && is_array($value) ?
                 merge_array($original[$key], $additionnal[$key]) : $value
-            );            
+            );
         }
     }
-    return $original;    
+    return $original;
 }
