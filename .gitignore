@@ -5,3 +5,5 @@
 /framework/build.php
 /framework/*.tmp
 /framework/*.old
+/build.php.old
+/build.php

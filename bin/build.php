@@ -4,7 +4,7 @@
 defined('BEABA_PATH') OR define(
         'BEABA_PATH', !empty($_SERVER['BEABA_PATH']) ?
             $_SERVER['BEABA_PATH'] :
-            '../framework'
+            '..'
 );
 require_once BEABA_PATH . '/bootstrap.php';
 // CONFIGURE THE SCRIPT

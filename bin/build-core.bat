@@ -1,3 +1,3 @@
 @echo off
-php build.php -i ../framework/build.json
+php build.php -i ../build.json
 pause 
