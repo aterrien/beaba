@@ -14,6 +14,6 @@
     ],
     "require": {
         "php": ">=5.3.0",
-        "beaba/installer": "0.1.*"
+        "beaba/installer": "dev-master"
     }
 }
