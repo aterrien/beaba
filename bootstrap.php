@@ -14,10 +14,14 @@ spl_autoload_register(function($class) {
             include './' . strtr($location[1], '\\', '/') . '.php';
             break;
         case 'application':
-            include BEABA_APP . '/' APP_NAME . '/' . strtr($location[1], '\\', '/') . '.php';
+            include 
+                BEABA_APP . '/' .APP_NAME . '/' 
+                . strtr($location[1], '\\', '/') . '.php';
             break;
         case 'plugin':
-            include BEABA_PATH . '/plugins/' . strtr($location[1], '\\', '/') . '.php';
+            include 
+                BEABA_PATH . '/plugins/' 
+                . strtr($location[1], '\\', '/') . '.php';
             break;
         case 'beaba':
             include BEABA_PATH . '/' . strtr($location[1], '\\', '/') . '.php';
