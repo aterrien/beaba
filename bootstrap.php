@@ -14,7 +14,7 @@ spl_autoload_register(function($class) {
             include './' . strtr($location[1], '\\', '/') . '.php';
             break;
         case 'application':
-            include BEABA_APP . '/' . strtr($location[1], '\\', '/') . '.php';
+            include BEABA_APP . '/' APP_NAME . '/' . strtr($location[1], '\\', '/') . '.php';
             break;
         case 'plugin':
             include BEABA_PATH . '/plugins/' . strtr($location[1], '\\', '/') . '.php';
@@ -28,7 +28,8 @@ spl_autoload_register(function($class) {
 
 // sets default defines
 defined('BEABA_PATH') OR define('BEABA_PATH', __DIR__);
-defined('BEABA_APP') OR define('BEABA_APP', BEABA_PATH . '/../application/');
+defined('BEABA_APP') OR define('BEABA_APP', BEABA_PATH . '/../applications/');
+defined('APP_NAME') OR define('APP_NAME', 'default');
 
 // include the core build file
 if ( file_exists( BEABA_PATH . '/build.php' ) ) {
