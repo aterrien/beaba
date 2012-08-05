@@ -32,7 +32,7 @@ spl_autoload_register(function($class) {
 
 // sets default defines
 defined('BEABA_PATH') OR define('BEABA_PATH', __DIR__);
-defined('BEABA_APP') OR define('BEABA_APP', BEABA_PATH . '/../applications/');
+defined('BEABA_APP') OR define('BEABA_APP', BEABA_PATH . '/../applications');
 defined('APP_NAME') OR define('APP_NAME', 'default');
 
 // include the core build file

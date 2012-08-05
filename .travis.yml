@@ -1,7 +1,6 @@
 language: php
 
 php:
-  - 5.3.3
   - 5.3
   - 5.4
 
@@ -10,4 +9,4 @@ before_script:
   - php composer.phar install
   - wget http://downloads.atoum.org/nightly/mageekguy.atoum.phar
 
-script: php mageekguy.atoum.phar
+script: php ./bin/tests.php

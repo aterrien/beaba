@@ -7,3 +7,5 @@
 /framework/*.old
 /build.php.old
 /build.php
+/composer.lock
+/vendor
