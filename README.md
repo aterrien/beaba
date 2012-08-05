@@ -1,7 +1,7 @@
 # beaba
 
 
-BEABA is a lightweight MVC framework written in PHP :
+BEABA is a lightweight MVC framework written in PHP 5.3 :
 
 - core is less than 1K LoC *nb1*
 - really K.I.S.S oriented
@@ -10,6 +10,9 @@ BEABA is a lightweight MVC framework written in PHP :
 - light cook-book documentation
 
 *nb1 : 790 lines of code from building script (removes comments + format brackets to egyptian style) - exclude configuration scripts* 
+
+
+[![Build Status](https://secure.travis-ci.org/ichiriac/beaba.png)](http://travis-ci.org/ichiriac/beaba)
 
 ## Example
 
@@ -43,12 +46,13 @@ $app->dispatch();
 
 1. Install with composer the package : beaba/default :
 
-Working directory : /usr/local/beaba/www/
+Make the path :
+    `$ mkdir -p /usr/local/beaba/public/www/ `
 
-    `$ cd /usr/local/beaba/www/ `
-    `$ cd /usr/local/beaba/www/ `
-    `$ cd /usr/local/beaba/www/ `
+Go the working dir :
+    `$ cd /usr/local/beaba/public/www/ `
 
+Create the composer.json file :
 ```json
 {
     "require": {
@@ -58,16 +62,16 @@ Working directory : /usr/local/beaba/www/
 }
 ```
 
-    `$ php composer.phar --install `
+    `$ composer.phar install `
 
 2. Create an apache vhost :
 ```xml
 <VirtualHost *:80>
     ServerAdmin dev.beaba@localhost.dev
     ServerName beaba.localhost.dev
-    DocumentRoot /usr/local/beaba/www/
+    DocumentRoot /usr/local/beaba/public/www/
 </VirtualHost>
-<Directory /usr/local/beaba/www/>
+<Directory /usr/local/beaba/public/www/>
     AllowOverride all
     Order Deny,Allow
     Allow from all  
