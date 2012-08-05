@@ -1,4 +1,4 @@
-# beaba
+# beaba [![Build Status](https://secure.travis-ci.org/ichiriac/beaba.png?branch=master)](http://travis-ci.org/ichiriac/beaba)
 
 
 BEABA is a lightweight MVC framework written in PHP 5.3 :
@@ -9,10 +9,8 @@ BEABA is a lightweight MVC framework written in PHP 5.3 :
 - 100% extensible & configurable
 - light cook-book documentation
 
-*nb1 : 790 lines of code from building script (removes comments + format brackets to egyptian style) - exclude configuration scripts* 
+*nb1 : 810 lines of code from building script (removes comments + format brackets to egyptian style) - exclude configuration scripts* 
 
-
-[![Build Status](https://secure.travis-ci.org/ichiriac/beaba.png)](http://travis-ci.org/ichiriac/beaba)
 
 ## Example
 
