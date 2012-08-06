@@ -1,7 +1,7 @@
 {
     "name": "beaba/core",
     "type": "beaba-core",
-    "version": "0.1.0",
+    "version": "0.1.2",
     "description": "SOLID & Lightweight PHP MVC framework",
     "keywords": ["micro","framework","mvc","lighweight"],
     "homepage": "http://ichiriac.github.com/beaba/",
@@ -15,6 +15,9 @@
     "require": {
         "php": ">=5.3.0",
         "beaba/installer": "dev-master"
+    },
+    "require-dev": {
+        "mageekguy/atoum": "dev-master"
     },
     "minimum-stability": "dev"
 }

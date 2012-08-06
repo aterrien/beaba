@@ -1,7 +1,7 @@
-# beaba
+# beaba [![Build Status](https://secure.travis-ci.org/ichiriac/beaba.png?branch=master)](http://travis-ci.org/ichiriac/beaba)
 
 
-BEABA is a lightweight MVC framework written in PHP :
+BEABA is a lightweight MVC framework written in PHP 5.3 :
 
 - core is less than 1K LoC *nb1*
 - really K.I.S.S oriented
@@ -9,50 +9,67 @@ BEABA is a lightweight MVC framework written in PHP :
 - 100% extensible & configurable
 - light cook-book documentation
 
-*nb1 : 790 lines of code from building script (removes comments + format brackets to egyptian style) - exclude configuration scripts* 
+*nb1 : 810 lines of code from building script (removes comments + format brackets to egyptian style) - exclude configuration scripts* 
+
 
 ## Example
 
 ```php
 <?php
-require_once '../bootstrap.php'; 
+// This example is just for fun, but you have real controllers classes
+require_once '../../beaba/framework/bootstrap.php'; 
 $app = new beaba\core\WebApp(array(
     'routes' => array(
         // start routes injections
         'index' => array(
             'callback' => function( $app, $args ) {
                 $app->getView()
-                    ->setLayout('empty.phtml')
+                    ->setTemplate('empty')
                     ->push(
                         'content',
                         function( $app, $data ) {
-                            echo 'Hello world';
+                            echo '<h1>Hello world</h1>';
                         }
                     )
-                ;    
+                ;
             }
         )
         // end of routes injection
     )
 ));
-$app->dispatch(
-	$_SERVER['REQUEST_URI'],
-	$_REQUEST
-);
+$app->dispatch();
 ```
 
 ## Install
 
-1. Download this this project
+1. Install with composer the package : beaba/default :
+
+Make the path :
+    `$ mkdir -p /usr/local/beaba/public/www/ `
+
+Go the working dir :
+    `$ cd /usr/local/beaba/public/www/ `
+
+Create the composer.json file :
+```json
+{
+    "require": {
+        "beaba/default":"dev-master"
+    },
+    "minimum-stability": "dev"
+}
+```
+
+    `$ composer.phar install `
 
 2. Create an apache vhost :
 ```xml
 <VirtualHost *:80>
     ServerAdmin dev.beaba@localhost.dev
     ServerName beaba.localhost.dev
-    DocumentRoot /var/www/beaba/public/
+    DocumentRoot /usr/local/beaba/public/www/
 </VirtualHost>
-<Directory /var/www/beaba/public/>
+<Directory /usr/local/beaba/public/www/>
     AllowOverride all
     Order Deny,Allow
     Allow from all  
@@ -66,6 +83,10 @@ $app->dispatch(
 3. Add to the domain to /etc/hosts
 
     `$ echo "127.0.0.1 beaba.localhost.dev" >> /etc/hosts`
+
+## Documentation & Cook-Book
+
+It's in progress ...
 
 # MIT License
 
