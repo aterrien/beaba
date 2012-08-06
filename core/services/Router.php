@@ -12,7 +12,7 @@ class Router extends core\Service implements core\IRouter
      * List of routing configuration
      * @var array
      */
-    protected $_routes;          
+    protected $_routes;
     /**
      * Retrieves a list of routes from the configuration
      * @return array
@@ -23,7 +23,7 @@ class Router extends core\Service implements core\IRouter
             $this->_routes = $this->_app->config->getConfig('routes');
         }
         return $this->_routes;
-    }       
+    }
     
     /**
      * Gets the requested route
@@ -44,12 +44,13 @@ class Router extends core\Service implements core\IRouter
                         if ( $route !== false ) {
                             return $route;
                         }
-                    }                    
+                    }
                 }
             }
         }
         return false;
     }
+    
     /**
      * Check if the specified route match or not
      * @param string $url
@@ -66,6 +67,9 @@ class Router extends core\Service implements core\IRouter
                     return ($url === $check[1]);
                 }
                 break;
+            case 'ends':
+                return substr( $url, -strlen( $check[1] ) ) === $check[1];
+                break;
             case 'path':
                 $times = substr_count($url, '/');
                 if ( !empty($check[2]) ) {
@@ -75,8 +79,8 @@ class Router extends core\Service implements core\IRouter
                         return in_array( $times, $check[1] );
                     } else {
                         return $times === $check[1];
-                    }                     
-                }                
+                    }
+                }
                 break;
             default:
                 throw new \Exception(
