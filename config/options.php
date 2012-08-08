@@ -13,7 +13,7 @@ return array(
             $options = $app->config->getConfig('options');
             $out->writeLine('Options :');
             $out->writeLine(null);
-            foreach( $options as $name => $opt ) {                
+            foreach( $options as $name => $opt ) {
                 $desc = ' --' . $name;
                 if ( !empty($opt['alias']) ) {
                     if ( is_string($opt['alias']) ) $opt['alias'] = array($opt['alias']);
@@ -34,15 +34,12 @@ return array(
         'title'         => 'Imports the specified file (json) configuration',
         'type'          => 'file',
         'alias'         => 'i', 
-        'default'       => substr(
-            $_SERVER['SCRIPT_NAME'], 0, strlen($_SERVER['SCRIPT_NAME']) - 4
-         ) . '.json',
         'handler'       => function( Application $app, &$params ) {
-            $params = merge_array(                    
+            $params = merge_array(
                 json_decode( 
                     file_get_contents($params['import']), true 
                 ), $params
-            );      
+            );
         }
     )    
 );
