@@ -235,6 +235,7 @@ class ArrayMerge extends ArrayObject
             ) {
                 $value = $value[0];
             } else {
+                //print_r($value);
                 $value = new TokenObject( $value );
             }
             //echo ' * ' . $key->__toString() . ' : ' . $value->__toString() . "\n\n";
@@ -274,7 +275,7 @@ class ArrayMerge extends ArrayObject
         for($i = $offset; $i < $size; $i++ ) {
             $tok = $tokens[$i];
             // calculate the array key
-            if ( $tok[0] ===  T_WHITESPACE && empty($value) ) continue;
+            if ( $tok[0] ===  T_WHITESPACE ) continue;
             if ( $tok[0] ===  T_ARRAY ) {
                 $array = new ArrayMerge();
                 $i = $array->parseTokens($tokens, $i + 2);
