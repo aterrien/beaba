@@ -156,14 +156,14 @@ class ArrayMerge extends ArrayObject
         }
         return $this->parseTokens($tokens);
     }
-
+    /*
     private function debug($tok) {
         if ( is_array($tok) ) {
             echo token_name($tok[0]) . ' - ' . $tok[1] . "\n";
         } else {
-            echo $tok . "\n";
+            echo 'TEXT : ' . $tok . "\n";
         }
-    }
+    }*/
     
     /**
      *
@@ -189,7 +189,7 @@ class ArrayMerge extends ArrayObject
         $key = array();
         $value = array();
         for($i = $offset; $i < $size; $i++ ) {
-            $i = $this->eatKey( $tokens, $i, $key );
+            $i = $this->eatValue( $tokens, $i, $key, true );
             //$this->debug( $tokens[$i] );
             if ( 
                 $tokens[$i] === ')' 
@@ -235,39 +235,21 @@ class ArrayMerge extends ArrayObject
             ) {
                 $value = $value[0];
             } else {
-                //print_r($value);
+                // print_r($value);
                 $value = new TokenObject( $value );
             }
-            //echo ' * ' . $key->__toString() . ' : ' . $value->__toString() . "\n\n";
+            // $this->debug( $tokens[$i] ) ;
+            // echo ' * ' . $key->__toString() . ' : ' . $value->__toString() . "\n\n";
             $this->set($key, $value);
             if ( $tokens[$i][0] === ')' ) {
-                //echo '-- Result : ' . $this->__toString()."\n---\n";
+                // echo '-- Result : ' . $this->__toString()."\n---\n";
                 return $i;
             }
         }
         throw new \Exception('Unexpected end');
     }
     
-    protected function eatKey( &$tokens, $offset, &$key ) 
-    {
-        $key = array();
-        $size = count( $tokens );
-        for($i = $offset; $i < $size; $i++ ) {
-            $tok = $tokens[$i];
-            if ( $tok[0] === ',' || $tok[0] === ')' ) return $i;
-            // calculate the array key
-            if ( $tok[0] !== T_DOUBLE_ARROW ) {
-                if ( $tok[0] !== T_WHITESPACE ) {
-                    $key[] = $tok;
-                }
-            } else {
-                return $i + 1;
-            }
-        }
-        throw new \Exception('Unexpected end');
-    }
-    
-    protected function eatValue( &$tokens, $offset, &$value ) 
+    protected function eatValue( &$tokens, $offset, &$value, $as_key = false ) 
     {
         $value = array();
         $size = count( $tokens );
@@ -276,10 +258,15 @@ class ArrayMerge extends ArrayObject
             $tok = $tokens[$i];
             // calculate the array key
             if ( $tok[0] ===  T_WHITESPACE ) continue;
+            if ( $as_key && $tok[0] === T_DOUBLE_ARROW ) {
+                return $i + 1;
+            }
             if ( $tok[0] ===  T_ARRAY ) {
                 $array = new ArrayMerge();
+                //echo '=== > Start array' ."\n";
                 $i = $array->parseTokens($tokens, $i + 2);
                 $value[] = $array;
+                //echo '< ===  End array' ."\n";
             } elseif ( $tok[0] ===  T_FUNCTION ) {
                 $i = $this->eatFunction($tokens, $i, $value);
             } else {

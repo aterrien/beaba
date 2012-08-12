@@ -50,5 +50,17 @@ class ArrayMerge extends atoum\test {
                 'Bad merge'
             )
         ;
+        $reader->addFile( __DIR__ . '/merge_extends.php' );
+        $this->assert()
+            ->array( 
+                eval(
+                    'return ' . $reader->__toString() . ';'
+                )
+            )
+            ->hasKeys(
+                array('header', 'footer'),
+                'All keys not found'
+            )
+        ;
     }
 }
