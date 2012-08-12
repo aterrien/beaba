@@ -37,6 +37,12 @@ $app = new beaba\core\Batch(
                 'alias' => 'f',
                 'required' => true
             ),
+            'plugins' => array(
+                'title' => 'Include plugins configuration',
+                'type' => 'flag',
+                'alias' => 'p',
+                'default' => true
+            ),
             'config' => array(
                 'title' => 'List of configuration to build',
                 'type' => 'files',
@@ -63,12 +69,14 @@ $app = new beaba\core\Batch(
     )
 );
 // RUN THE SCRIPT
-$app->dispatch(function( beaba\core\Batch $app, $args ) {
+$app->dispatch(
+    function( beaba\core\Batch $app, $args ) {
         $out = $app->getResponse();
         $f = fopen($args['target'] . '.tmp', 'w+');
         fwrite($f, '<?php // BUILD ' . date('Y-m-d H:i:s') . "\n");
-        $out->writeLine('Building classes');
+        // HANDLING THE SOURCE CODE
         $tloc = 0;
+        $out->writeLine('Building classes');
         foreach ($args['files'] as $target) {
             $loc = buildFile(
                 $f, $target, $args['comments'], $args['format']
@@ -77,18 +85,48 @@ $app->dispatch(function( beaba\core\Batch $app, $args ) {
             $tloc += $loc;
         }
         $out->writeLine('Lines of code : ' . $tloc . "\n");
-
-        $tloc = 0;
+        // HANDLING CONFIGURATIONS
         $out->writeLine('Building the configuration');
+        if ( $args['plugins'] ) {
+            $plugins = array_keys($app->getPlugins()->getEnabledPlugins());
+            $out->writeLine(
+                'Including plugin [' . implode(', ', $plugins) . ']'
+            );
+        }
         foreach ($args['config'] as $target) {
             $file = $args['basedir'] . '/config/' . $target . '.php';
-            $loc = buildConfig(
-                $f, $file, $target, $args['prefix'], $args['comments'], $args['format']
+            $tokenizer = new \beaba\core\ArrayMerge();
+            $out->writeLine(' - ' . $file );
+            if ( file_exists($file) ) {
+                $tokenizer->addFile($file);
+            } else {
+                $out->writeLine('Info : ignored ' . $file);
+            }
+            // also include plugins files
+            if ( $args['plugins'] ) {
+                foreach( 
+                    $app->getPlugins()->getEnabledPlugins() as $name => $conf
+                ) {
+                    $pluginFile = $args['basedir'] 
+                        . '/plugins/config/' 
+                        . $target . '.php'
+                    ;
+                    if ( file_exists($pluginFile) ) {
+                        $out->writeLine('   + ' . $pluginFile );
+                        $tokenizer->addFile($pluginFile);
+                    }
+                }
+            }
+            // output to the stream
+            fwrite($f, '// ' . $file . "\n");
+            fwrite($f, 'function config_' 
+                . $args['prefix'] . '_' 
+                . strtr($file, '/.', '__')
             );
-            $tloc += $loc;
-            $out->writeLine(' - ' . $file . ' : ' . $loc);
+            fwrite($f, '() { ' . "\nreturn ");
+            fwrite($f, $tokenizer->__toString());
+            fwrite($f, '; }' . "\n");
         }
-        $out->writeLine('Lines of code : ' . $tloc . "\n");
         fclose($f);
         // check the file syntax
         ob_start();
@@ -114,41 +152,8 @@ $app->dispatch(function( beaba\core\Batch $app, $args ) {
             }
         }
         exit(0);
-    });
-
-/**
- * Build the specified configuration file
- * @param type $f
- * @param type $file 
- */
-function buildConfig($f, $file, $name, $prefix, $comments, $format)
-{
-    $tokens = token_get_all(file_get_contents($file));
-    if ($tokens[0][0] !== T_OPEN_TAG) {
-        throw new Exception(
-            'Bad ' . $file . ' format, expecting an OPEN_TAG'
-        );
     }
-    $tsize = count($tokens);
-    for ($offset = 1; $offset < $tsize; $offset++) {
-        if (is_array($tokens[$offset]) && $tokens[$offset][0] === T_RETURN) {
-            break;
-        }
-    }
-
-    if ($tokens[$offset][0] !== T_RETURN) {
-        throw new Exception(
-            'Bad ' . $file . ' format, expecting an RETURN'
-        );
-    }
-
-    fwrite($f, '// ' . $file . "\n");
-    fwrite($f, 'function config_' . $prefix . '_' . strtr($name, '/.', '__'));
-    fwrite($f, '() { ' . "\n");
-    $loc = writeCode($f, $tokens, $comments, $format, $offset);
-    fwrite($f, '}' . "\n");
-    return $loc;
-}
+);
 
 /**
  * Build the specified php script

@@ -23,6 +23,7 @@
     ,"prefix"   : "core"
     ,"config"   : [
         "assets", "infos", "layouts",
-        "routes", "services", "plugins"
+        "routes", "services", "plugins",
+        "events/beaba/core/Application"
     ]
 }

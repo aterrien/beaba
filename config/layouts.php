@@ -17,7 +17,7 @@ return array(
                 array(
                     'route' => array('index'), 
                     'title' => 'Home'
-                )                    
+                )
             )
         )
     ),
