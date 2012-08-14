@@ -127,8 +127,8 @@ class Configuration
         if (!isset($this->_app[$key])) {
             $this->_app[$key] = (
                 BEABA_BUILD_APP && 
-                $data = $this->_readCallbackConf('app', $key)
-            ) ? $data : $this->_readFileConf(BEABA_APP, $key);
+                $data = $this->_readCallbackConf('app_' . APP_NAME , $key)
+            ) ? $data : $this->_readFileConf( BEABA_APP . '/' . APP_NAME , $key);
         }
         return $this->_app[$key];
     }
