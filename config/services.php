@@ -14,5 +14,6 @@ return array(
     'assets'    => 'beaba\\core\\services\\Assets',
     'view'      => 'beaba\\core\\services\\View',
     'infos'     => 'beaba\\core\\services\\Infos',
-    'plugins'   => 'beaba\\core\\services\\PluginManager'
+    'plugins'   => 'beaba\\core\\services\\PluginManager',
+    'storage'   => 'beaba\\core\\services\\Storage'
 );
