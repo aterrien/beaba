@@ -121,7 +121,7 @@ $app->dispatch(
             fwrite($f, '// ' . $file . "\n");
             fwrite($f, 'function config_' 
                 . $args['prefix'] . '_' 
-                . strtr($file, '/.', '__')
+                . strtr( $target, '/.', '__')
             );
             fwrite($f, '() { ' . "\nreturn ");
             fwrite($f, $tokenizer->__toString());
