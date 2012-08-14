@@ -96,6 +96,32 @@ abstract class Application extends Event
     }
 
     /**
+     * Gets the specified storage driver
+     * @param string $name 
+     * @return IStorageDriver
+     */
+    public function getStorage( $name )
+    {
+        return $this
+            ->getService('storage')
+            ->getDriver( $name )
+        ;
+    }
+
+    /**
+     * Gets a meta model storage structure
+     * @param string $name
+     * @return IStorageMeta
+     */
+    public function getModel( $name )
+    {
+        return $this
+            ->getService('storage')
+            ->getMeta( $name )
+        ;
+    }
+
+    /**
      * Gets the informations layer
      * @return IInfos
      */
@@ -217,6 +243,7 @@ abstract class Application extends Event
             }
         }
     }
+
 }
 
 /**
@@ -233,24 +260,202 @@ interface IService
 }
 
 /**
+ * Defines a storage providers pool
+ */
+interface IStoragePool extends IService
+{
+
+    /**
+     * Gets a storage provider from its configuration key
+     * @param string $name
+     * @return IStorageDriver
+     */
+    function getDriver($name = null);
+
+    /**
+     * Creates a storage instance for the specified driver
+     * @param string $driver
+     * @param array $conf
+     * @return IStorageDriver
+     */
+    function createDriver($driver, array $conf = null);
+
+    /**
+     * Gets the specified meta structure
+     * @param string $name
+     * @return IStorageMeta
+     */
+    function getMeta($name);
+
+    /**
+     * Create a meta structure
+     * @param string $conf
+     * @return IStorageMeta
+     */
+    function createMeta(array $conf);
+}
+
+/**
+ * Defines a storage driver
+ */
+interface IStorageDriver extends IService
+{
+
+    /**
+     * Create a select statement
+     * @return IStorageRequest
+     */
+    function select( IStorageMeta $target );
+
+    /**
+     * Create a select statement
+     * @return IStorageRequest
+     */
+    function delete( IStorageMeta $target, array $primaries );
+
+    /**
+     * Inserts values and returns the created primary
+     * @return integer
+     */
+    function insert( IStorageMeta $target, array $values );
+
+    /**
+     * Update the specified record with specified values
+     * @return IStorageRequest
+     */
+    function update( IStorageMeta $target, array $values, $primary );
+}
+
+/**
+ * Defines a request structure
+ */
+interface IStorageRequest extends \Iterator, \Countable
+{
+
+    /**
+     * @return IStorageRequest
+     */
+    function where( $operator = 'and' );
+
+    /**
+     * @return IStorageRequest
+     */
+    function join( $relation );
+
+    /**
+     * @return IStorageRequest
+     */
+    function isEquals( $field, $value );
+
+    /**
+     * @return IStorageRequest
+     */
+    function isLike( $field, $value );
+
+    /**
+     * @return IStorageRequest
+     */
+    function isNull( $field );
+
+    /**
+     * @return IStorageRequest
+     */
+    function isBetween( $field, $start, $end );
+
+    /**
+     * @return IStorageRequest
+     */
+    function not();
+
+    /**
+     * @return IStorageRequest
+     */
+    function sub( $operator = 'and');
+
+    /**
+     * Ascending ordering
+     * @return IStorageRequest
+     */
+    function orderAsc( $column );
+
+    /**
+     * Descending ordering
+     * @return IStorageRequest
+     */
+    function orderDesc( $column );
+
+    /**
+     * Limiting the recordset size
+     * @return IStorageRequest
+     */
+    function limit( $offset, $size );
+
+    /**
+     * Check if the reader has results
+     * @returns boolean		 
+     */
+    function hasResults();
+}
+
+interface IStorageMeta
+{
+
+    /**
+     * Gets the storage name
+     * @return string
+     */
+    function getName();
+
+    /**
+     * Gets the storage columns
+     * 
+     * Structure :
+     * {
+     *      column-name: {
+     *          type:   integer | string | boolean | datetime
+     *          size:   numeric | long
+     *          + extras
+     *      }
+     * }
+     * @return array
+     */
+    function getColumns();
+
+    /**
+     * Gets the columns relations
+     * 
+     * Structure :
+     * {
+     *      relation-name: {
+     *          type:   identity | foreign | many
+     *          target: 
+     *      }
+     * }
+     * @return array
+     */
+    function getRelations();
+}
+
+/**
  * Defines a cache providers pool
  */
-interface ICachePool extends IService 
+interface ICachePool extends IService
 {
+
     /**
      * Gets a cache provider from its configuration key
      * @param string $name
      * @return ICacheDriver
      */
-    function get( $name = null );
-    
+    function get($name = null);
+
     /**
      * Creates a cache instance for the specified driver
      * @param string $driver
      * @param array $conf
      * @return ICacheDriver
      */
-    function create( $driver, array $conf = null );
+    function create($driver, array $conf = null);
 }
 
 /**
@@ -258,43 +463,49 @@ interface ICachePool extends IService
  */
 interface ICacheDriver extends IService
 {
+
     /**
      * Gets the value from the specified key
      * @param string $key
      * @return mixed
      */
-    function getValue( $key );
+    function getValue($key);
+
     /**
      * Get values from the specified keys
      * @param array $keys
      * @return array
      */
-    function getValues( array $keys );
+    function getValues(array $keys);
+
     /**
      * Sets a value attached to the specified key
      * @param string $key
      * @param mixed $value
      * @return ICache
      */
-    function setValue( $key, $value );
+    function setValue($key, $value);
+
     /**
      * Set values attaches to specified indexes (keys)
      * @param array $values
      * @return ICache
      */
-    function setValues( $values );
+    function setValues($values);
+
     /**
      * Remove the specified key
      * @param string $key
      * @return ICache
      */
-    function unsetValue( $key );
+    function unsetValue($key);
+
     /**
      * Remove the specified keys
      * @param array $key
      * @return ICache
      */
-    function unsetValues( $keys );
+    function unsetValues($keys);
 }
 
 /**
@@ -305,39 +516,44 @@ interface IPlugin extends IService
     /**
      * when the plugin is enabled
      */
-    const E_ENABLE      = 'onEnable';
+    const E_ENABLE = 'onEnable';
     /**
      * when the plugin is disabled
      */
-    const E_DISABLE     = 'onDisable';
+    const E_DISABLE = 'onDisable';
+
     /**
      * Enabled the current plugin to the specified target level
      * @param string $target
      * @return IPlugin
      */
-    function enable( $target = 'core' );
+    function enable($target = 'core');
+
     /**
      * Disable the current plugin from the specified target
      * @param string $target
      * @return IPlugin
      */
-    function disable( $target = 'core' );
+    function disable($target = 'core');
+
     /**
      *  Check if the current plugin is enabled
      *  @return boolean
      */
     function isEnabled();
+
     /**
      * Gets the current plugin options
      * @return array
      */
     function getOptions();
+
     /**
      * Gets an option value
      * @param string $name 
      * @return mixed
      */
-    function getOption( $name );
+    function getOption($name);
 }
 
 /**
@@ -345,34 +561,34 @@ interface IPlugin extends IService
  */
 interface IPluginManager extends IService
 {
+
     /**
      * Gets a list of all available plugins
      * @return array
      */
     function getPlugins();
-    
+
     /**
      * Gets a list of enabled plugins
      * @return array
      */
     function getEnabledPlugins();
-    
+
     /**
      * Gets the specified plugin
      * @param string $name
      * @return IPlugin
      * @throws \OutOfBoundsException
      */
-    function getPlugin( $name );
-    
+    function getPlugin($name);
+
     /**
      * Check if the specified plugin is enabled or not
      * @param string $name
      * @return boolean
      */
-    function isEnabled( $name );
+    function isEnabled($name);
 }
-
 
 /**
  * Defines the requesting service
