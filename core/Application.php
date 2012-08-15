@@ -212,9 +212,10 @@ abstract class Application extends Event
             $this->getRequest()->getParameters()
         ;
         $this->_raise(
-            self::E_DISPATCH, array(
-            'request' => $url,
-            'params' => $params
+            self::E_DISPATCH,
+            array(
+                'request' => $url,
+                'params' => $params
             )
         );
         if (!is_callable($url)) {
