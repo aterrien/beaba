@@ -179,7 +179,7 @@ class View extends core\Service implements core\IView
         foreach ($config as $zone => $widgets) {
             foreach ($widgets as $widget) {
                 if (
-                    empty($widget['visible'])
+                    !isset($widget['visible'])
                     || $widget['visible'] !== false
                 ) {
                     $this->push(
