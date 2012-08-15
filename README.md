@@ -84,21 +84,19 @@ Create the composer.json file :
     RewriteRule ^(.*)$ index.php?p=$1& [QSA,L]
 </Directory>
 <Directory /usr/local/beaba/framework/assets/>
-    Order allow,deny
-    Deny from all
-    <FilesMatch "\.(gif|jpe?g|png|css|js|svg|ttf)$">
-        AllowOverride all
-        Order Deny,Allow
-        Allow from all  
+    Order Deny,Allow
+    Allow from all
+    <FilesMatch "\.(php|inc|xml|json)$">
+        Order allow,deny
+        Deny from all
     </FilesMatch>
 </Directory>
 <Directory /usr/local/beaba/applications/>
-    Order allow,deny
-    Deny from all
-    <FilesMatch "\.(gif|jpe?g|png|css|js|svg|ttf)$">
-        AllowOverride all
-        Order Deny,Allow
-        Allow from all
+    Order Deny,Allow
+    Allow from all
+    <FilesMatch "\.(php|inc|xml|json)$">
+        Order allow,deny
+        Deny from all
     </FilesMatch>
 </Directory>
 ```
