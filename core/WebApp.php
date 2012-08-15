@@ -20,6 +20,7 @@ class WebApp extends Application
         $this->getResponse()->setHeader(
             'Content-Type', 'text/html'
         );
+        if ( is_null($response) ) $response = $this->getView();
         if ($response instanceof IView) {
             return $response->renderTemplate();
         } elseif (is_string($response)) {
