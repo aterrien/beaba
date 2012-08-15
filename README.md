@@ -9,21 +9,21 @@ BEABA is a lightweight MVC framework written in PHP 5.3 :
 - 100% extensible & configurable
 - light cook-book documentation
 
-*nb1 : 920 lines of code from building script (removes comments + format brackets to egyptian style) - exclude configuration scripts* 
+*nb1 : 950 lines of code from building script (removes comments + format brackets to egyptian style) - exclude configuration scripts* 
 
 
 ## Example
 
 ```php
 <?php
-// This example is just for fun, but you have real controllers classes
+// This example is just for fun, but should define controllers classes
 require_once '../../beaba/framework/bootstrap.php'; 
 $app = new beaba\core\WebApp(array(
     'routes' => array(
         // start routes injections
         'index' => array(
             'callback' => function( $app, $args ) {
-                $app->getView()
+                return $app->getView()
                     ->setTemplate('empty')
                     ->push(
                         'content',
@@ -37,8 +37,11 @@ $app = new beaba\core\WebApp(array(
         // end of routes injection
     )
 ));
-$app->dispatch();
+$app->getResponse()->write( $app->dispatch() );
 ```
+
+A REST controller example :
+https://gist.github.com/3362502#file_beaba_sample_rest.php
 
 ## Install
 
