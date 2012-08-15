@@ -31,6 +31,31 @@ class Router extends core\Service implements core\IRouter
     }
 
     /**
+     * Gets a url from the specified route 
+     * @param string $route
+     * @param array $args 
+     */
+    public function getUrl( $route, array $args = null ) 
+    {
+        $routes = $this->getRoutes();
+        if ( !isset( $routes[$route] )) {
+            throw new \OutOfBoundsException(
+                'Undefined route : ' . $route
+            );
+        }
+        $check = $routes[$route]['check'];
+        switch ($check[0]) {
+            case 'equals':
+                if ( is_array( $check[1] ) ) {
+                    return array_shift( $check[1] );
+                } else {
+                    return $check[1];
+                }
+                break;
+        }
+    }
+    
+    /**
      * Gets the requested route
      * @param string $url
      * @return string 

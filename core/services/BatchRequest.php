@@ -60,6 +60,14 @@ class BatchRequest extends core\Service implements core\IRequest
     }
 
     /**
+     * Gets the batch base dir
+     * @return string
+     */
+    public function getBaseDir() {
+        return '/';
+    }
+    
+    /**
      * Gets the response type : html, xml, json ...
      * @return string
      */

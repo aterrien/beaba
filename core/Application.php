@@ -185,6 +185,19 @@ abstract class Application extends Event
     }
 
     /**
+     * Gets a url from the specified route 
+     * @param string $route
+     * @param array $args 
+     */
+    public function getUrl( $route, array $args = null ) 
+    {
+        return 
+            $this->getRequest()->getBaseDir() . 
+            $this->getService('router')->getUrl( $route, $args )
+        ;
+    }
+
+    /**
      * Execute the specified action controller 
      * @param string $controller
      * @param string $action
@@ -612,6 +625,12 @@ interface IRequest extends IService
     public function getLocation();
 
     /**
+     * Gets the request base dir (to build requests)
+     * @return string 
+     */
+    public function getBaseDir();
+
+    /**
      * Sets the requested unique ressource location
      * @params string $url
      * @return IRequest
@@ -750,6 +769,13 @@ interface IRouter extends IService
      * @return string 
      */
     public function getRoute($url);
+
+    /**
+     * Gets a url from the specified route 
+     * @param string $route
+     * @param array $args 
+     */
+    public function getUrl( $route, array $args = null );
 }
 
 /**

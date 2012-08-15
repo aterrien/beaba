@@ -42,10 +42,7 @@ class HttpRequest
     public function getLocation()
     {
         if ( !$this->_location ) {
-            $base_dir = substr(
-                $_SERVER['SCRIPT_NAME'], 0, 
-                strrpos($_SERVER['SCRIPT_NAME'], '/')
-            );
+            $base_dir = $this->getBaseDir();
             $query = strpos($_SERVER['REQUEST_URI'], '?');
             $this->_location = substr(
                 $_SERVER['REQUEST_URI'], strlen($base_dir), 
@@ -56,6 +53,16 @@ class HttpRequest
         return $this->_location;
     }
 
+    /**
+     * Gets the request base dir (to build requests)
+     * @return type 
+     */
+    public function getBaseDir() {
+        return substr(
+            $_SERVER['SCRIPT_NAME'], 0, 
+            strrpos($_SERVER['SCRIPT_NAME'], '/')
+        );
+    }
     /**
      * Gets the response type : html, xml, json ...
      * @return string
