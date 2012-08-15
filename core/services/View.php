@@ -173,7 +173,8 @@ class View extends core\Service implements core\IView
             $this->_layout = $this->_app->getInfos()->getLayout();
         // load the layout default configuration
         $config = merge_array(
-            $this->_app->config->getConfig('layouts'), $this->_app->config->getConfig('layouts/' . $this->_layout)
+            $this->_app->config->getConfig('layouts'), 
+            $this->_app->config->getConfig('layouts/' . $this->_layout)
         );
         foreach ($config as $zone => $widgets) {
             foreach ($widgets as $widget) {
