@@ -12,6 +12,7 @@ use \beaba\core;
 class View extends core\Service implements core\IView
 {
 
+    protected $_defaults;
     protected $_template;
     protected $_layout;
     protected $_placeholders = array();
@@ -120,19 +121,37 @@ class View extends core\Service implements core\IView
             return ob_get_clean();
         }
         // check for a file include
-        $target = 'views/' . $file . '.phtml';
         $app = $this->_app;
         $data = $this->getDatasource($datasource);
-        if (!file_exists($target)) {
-            $file = BEABA_APP . '/' . APP_NAME . '/' . $target;
-            if (file_exists($file)) {
-                $target = $file;
-            } elseif (file_exists($file = BEABA_PATH . '/' . $target)) {
-                $target = $file;
-            } else {
-                $this->_app->getLogger()->warning(
-                    'Unable to locate the view : ' . $target
-                );
+        if (!file_exists($target = 'views/' . $file . '.phtml')) {
+            if (
+                !file_exists(
+                    $target = BEABA_APP . '/' 
+                            . APP_NAME . '/views/' 
+                            . $file . '.phtml'
+                )
+                && !file_exists(
+                    $target = BEABA_PATH . '/views/' 
+                            . $file . '.phtml'
+                )
+            ) {
+                if ( 
+                    isset( $this->_defaults[ $file ] ) 
+                    && is_callable( $this->_defaults[ $file ] )
+                ) 
+                {
+                    $this->_renderers[$file] = $this->_defaults[ $file ];
+                    ob_start();
+                    $this->_renderers[$file](
+                        $this->_app, 
+                        $data
+                    );
+                    return ob_get_clean();
+                } else {
+                    $this->_app->getLogger()->warning(
+                        'Unable to locate the view : ' . $file
+                    );
+                }
                 return '';
             }
         }
@@ -172,19 +191,21 @@ class View extends core\Service implements core\IView
         if (!$this->_layout)
             $this->_layout = $this->_app->getInfos()->getLayout();
         // load the layout default configuration
-        $config = merge_array(
+        $this->_defaults = merge_array(
             $this->_app->config->getConfig('layouts'), 
             $this->_app->config->getConfig('layouts/' . $this->_layout)
         );
-        foreach ($config as $zone => $widgets) {
-            foreach ($widgets as $widget) {
-                if (
-                    !isset($widget['visible'])
-                    || $widget['visible'] !== false
-                ) {
-                    $this->push(
-                        $zone, $widget['render'], empty($widget['data']) ? array() : $widget['data']
-                    );
+        foreach ($this->_defaults as $zone => $widgets) {
+            if ( is_array($widgets) ) {
+                foreach ($widgets as $widget) {
+                    if (
+                        !isset($widget['visible'])
+                        || $widget['visible'] !== false
+                    ) {
+                        $this->push(
+                            $zone, $widget['render'], empty($widget['data']) ? array() : $widget['data']
+                        );
+                    }
                 }
             }
         }
