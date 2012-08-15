@@ -9,15 +9,63 @@ namespace beaba\core;
  */
 class WebApp extends Application
 {
+
+    /**
+     * Renders the HTML response
+     * @param mixed $response
+     * @return string 
+     */
+    public function renderHtml( $response ) 
+    {
+        $this->getResponse()->setHeader(
+            'Content-Type', 'text/html'
+        );
+        if ($response instanceof IView) {
+            return $response->renderTemplate();
+        } elseif (is_string($response)) {
+            return $response;
+        } elseif ( 
+            isset( $response['view'] )
+            && isset( $response['data'] )
+        ) {
+            return $this->getView()->push(
+                'contents', $response['view'], $response['data']
+            )->renderTemplate();
+        } else {
+            throw new Exception(
+                'Unsupported response type', 501
+            );
+        }
+    }
+    
+    /**
+     * Serialize the result as a json
+     * @param mixed $response
+     * @return string 
+     */
+    public function renderJson( $response ) 
+    {
+        $this->getResponse()->setHeader(
+            'Content-Type', 'application/json'
+        );
+        return json_encode($response, JSON_FORCE_OBJECT);
+    }
+    
     /**
      * Dispatching the specified request
      * @param string $url
      * @param array $params 
      */
-    public function dispatch($url = null, array $params = null)
+    public function dispatch(
+        $method = null, $url = null, array $params = null, $format = null
+    )
     {
+        if (is_null($method))
+            $method = $this->getRequest()->getMethod();
+        if (is_null($format))
+            $format = $this->getRequest()->getResponseType();
         try {
-            parent::dispatch($url, $params);
+            $response = parent::dispatch($method, $url, $params);
         } catch (\Exception $ex) {
             $this->_raise(
                 self::E_ERROR, array(
@@ -31,7 +79,7 @@ class WebApp extends Application
                     $ex->getCode(), $ex->getHttpMessage()
                 );
             } else {
-                $this->execute(
+                $response = $this->execute(
                     'beaba\\controllers\\errors', 'show', array(
                     'request' => $url,
                     'params' => $params,
@@ -41,12 +89,66 @@ class WebApp extends Application
             }
         }
         $this->_raise(self::E_BEFORE_RENDER);
-        $response = $this->getView()->renderTemplate();
+        // EXECUTING THE RESPONSE
+        if (!is_string($response)) {
+            if (is_array($response)) {
+                // execute the rest method
+                if (isset($response[$method])) {
+                    $out = $response[$method];
+                } elseif (isset($response['*'])) {
+                    $out = $response['*'];
+                } else {
+                    throw new Exception(
+                        'Unsuported method : ' . $method, 501
+                    );
+                }
+                // handle a callback
+                if ( is_callable( $out ) ) {
+                    $out = $out();
+                }
+                // handle the response type
+                if ( isset( $out[ $format ] ) ) {
+                    $out = $out[ $format ];
+                } elseif (isset($out['*'])) {
+                    $out = $out['*'];
+                } else {
+                    throw new Exception(
+                        'Unsuported format : ' . $format, 501
+                    );
+                }
+                if ( is_callable( $out ) ) {
+                    $response = $out();
+                } else {
+                    $response = $out;
+                }
+            }
+            // renders the template
+            switch( $format ) {
+                case 'html':
+                    $response = $this->renderHtml($response);
+                    break;
+                case 'json':
+                    $response = $this->renderJson($response);
+                    break;
+                case 'xml':
+                    $response = $this->renderXml($response);
+                    break;
+                case 'rss':
+                    $response = $this->renderRss($response);
+                    break;
+                default:
+                    throw new Exception(
+                        'Unsuported format type : ' . $format, 501
+                    );
+            }
+        }
+        // clean-up the view service
         $this->_raise(
             self::E_AFTER_RENDER, array(
-            'response' => &$response
+                'response' => &$response
             )
         );
-        $this->getResponse()->write($response);
+        unset($this->_services['view']);
+        return $response;
     }
 }
