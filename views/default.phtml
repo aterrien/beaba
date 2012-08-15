@@ -7,15 +7,12 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">        
         <title><?php echo $app->getInfos()->getTitle(); ?></title>
+        <!--[if lt IE 9]>
+          <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->        
         <?php foreach($app->getAssets()->getCss() as $css) { ?>
         <link rel="stylesheet" href="<?php echo $css; ?>" />
         <?php } ?>
-        <style type="text/css">
-          body {
-            padding-top: 60px;
-            padding-bottom: 40px;
-          }
-        </style>        
     </head>
     <body>
         <?php echo $app->getView()->render('menu'); ?>
