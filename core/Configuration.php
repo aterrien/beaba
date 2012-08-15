@@ -51,8 +51,10 @@ class Configuration
                 $this->getCoreConfig($key), 
                 merge_array(
                     $this->getAppConfig($key), 
-                    $this->getLocalConfig($key)
-                )
+                    $this->getLocalConfig($key),
+                    true
+                ),
+                true
             );
         }
         return $this->_config[$key];
