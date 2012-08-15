@@ -42,9 +42,10 @@ class Configuration
     /**
      * Gets the merged configuration from different sources
      * @param string $key 
+     * @param boolean $prepend
      * @return array
      */
-    public function getConfig($key)
+    public function getConfig($key, $prepend = false)
     {
         if (!isset($this->_config[$key])) {
             $this->_config[$key] = merge_array(
@@ -52,9 +53,9 @@ class Configuration
                 merge_array(
                     $this->getAppConfig($key), 
                     $this->getLocalConfig($key),
-                    true
+                    $prepend
                 ),
-                true
+                $prepend
             );
         }
         return $this->_config[$key];
