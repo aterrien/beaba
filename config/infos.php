@@ -5,7 +5,7 @@ return array(
     'description'   => 'Your page description',
     'template'      => 'default',
     'layout'        => 'layout',
-    'assets'        => array('bootstrap'),
+    'assets'        => array('jquery','bootstrap'),
     'users'         => array(
         'admin' => 'secret'
     )
