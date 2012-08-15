@@ -124,10 +124,11 @@ class View extends core\Service implements core\IView
         $app = $this->_app;
         $data = $this->getDatasource($datasource);
         if (!file_exists($target)) {
-            if (file_exists(BEABA_APP . '/' . $target)) {
-                $target = BEABA_APP . '/' . $target;
-            } elseif (file_exists(BEABA_PATH . '/' . $target)) {
-                $target = BEABA_PATH . '/' . $target;
+            $file = BEABA_APP . '/' . APP_NAME . '/' . $target;
+            if (file_exists($file)) {
+                $target = $file;
+            } elseif (file_exists($file = BEABA_PATH . '/' . $target)) {
+                $target = $file;
             } else {
                 $this->_app->getLogger()->warning(
                     'Unable to locate the view : ' . $target
