@@ -13,10 +13,10 @@ class Controller
     const DELETE    = 'DELETE';
     const PUT       = 'PUT';
     const ALL       = '*';
-    const HTML      = 'HTML';
-    const JSON      = 'JSON';
-    const XML       = 'XML';
-    const RSS       = 'RSS';
+    const HTML      = 'html';
+    const JSON      = 'json';
+    const XML       = 'xml';
+    const RSS       = 'rss';
     
     protected $_app;
 
