@@ -1,17 +1,5 @@
 <?php /* @var $app beaba\core\Application */ ?>
-<div class="navbar navbar-fixed-top">
-  <div class="navbar-inner">
-    <div class="container">
-      <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-      </a>
-      <a class="brand" href="#"><?php echo $app->getInfos()->getName(); ?></a>
-      <?php echo $app->getView()->renderPlaceholder('header'); ?>
-    </div>
-  </div>
-</div>
+<?php echo $app->getView()->render('menu'); ?>
 <div class="container">
     <!-- Main hero unit for a primary marketing message or call to action -->
     <div class="hero-unit">
