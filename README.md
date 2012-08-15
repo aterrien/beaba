@@ -9,7 +9,7 @@ BEABA is a lightweight MVC framework written in PHP 5.3 :
 - 100% extensible & configurable
 - light cook-book documentation
 
-*nb1 : 810 lines of code from building script (removes comments + format brackets to egyptian style) - exclude configuration scripts* 
+*nb1 : 890 lines of code from building script (removes comments + format brackets to egyptian style) - exclude configuration scripts* 
 
 
 ## Example
