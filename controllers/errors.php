@@ -14,7 +14,7 @@ class errors extends \beaba\core\Controller
 
     public function show($args)
     {
-        $this->_app->getView()->setLayout('simple.phtml');
+        $this->_app->getView()->setLayout('simple');
         if ($args['error'] instanceof core\Exception) {
             $code = $args['error']->getCode();
             $title = $args['error']->getHttpMessage();
