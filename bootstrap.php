@@ -65,7 +65,9 @@ function merge_array( $original, $additionnal )
             $original[] = $value;
         } else {
             $original[$key] = (
-                isset($original[$key]) && is_array($value) ?
+                !empty($original[$key]) 
+                && is_array($value) 
+                && is_array($original[$key]) ?
                 merge_array($original[$key], $additionnal[$key]) : $value
             );
         }
