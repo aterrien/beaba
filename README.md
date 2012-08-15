@@ -67,6 +67,8 @@ Create the composer.json file :
 <VirtualHost *:80>
     ServerAdmin dev.beaba@localhost.dev
     ServerName beaba.localhost.dev
+    Alias /core/ /usr/local/beaba/framework/
+    Alias /apps/ /usr/local/beaba/applications/
     DocumentRoot /usr/local/beaba/public/www/
 </VirtualHost>
 <Directory /usr/local/beaba/public/www/>
@@ -76,7 +78,25 @@ Create the composer.json file :
     RewriteEngine on
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d
-    RewriteRule ^(.*)$ index.php?p=$1& [QSA,L]         
+    RewriteRule ^(.*)$ index.php?p=$1& [QSA,L]
+</Directory>
+<Directory /usr/local/beaba/framework/assets/>
+    Order allow,deny
+    Deny from all
+    <FilesMatch "\.(gif|jpe?g|png|css|js|svg|ttf)$">
+        AllowOverride all
+        Order Deny,Allow
+        Allow from all  
+    </FilesMatch>
+</Directory>
+<Directory /usr/local/beaba/applications/>
+    Order allow,deny
+    Deny from all
+    <FilesMatch "\.(gif|jpe?g|png|css|js|svg|ttf)$">
+        AllowOverride all
+        Order Deny,Allow
+        Allow from all
+    </FilesMatch>
 </Directory>
 ```
 
