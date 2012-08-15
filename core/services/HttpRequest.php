@@ -21,7 +21,7 @@ class HttpRequest
      */
     public function getMethod()
     {
-        
+        return $_SERVER['REQUEST_METHOD'];
     }
     
     /**
@@ -69,7 +69,9 @@ class HttpRequest
      */
     public function getResponseType()
     {
-        
+        $accept = explode(',', $_SERVER['HTTP_ACCEPT'], 2);
+        $type = explode('/', array_shift( $accept ), 2);
+        return strtoupper(array_pop($type));
     }
 
     /**
