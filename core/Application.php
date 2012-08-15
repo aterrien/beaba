@@ -216,7 +216,7 @@ abstract class Application extends Event
      * @param array $params 
      * @throws \Exception
      */
-    public function dispatch($url = null, array $params = null)
+    public function dispatch($method = null, $url = null, array $params = null)
     {
         $params = $params ?
             merge_array(
@@ -250,10 +250,10 @@ abstract class Application extends Event
                 $parts = explode('::', $route, 2);
                 if (empty($parts[1]))
                     $parts[1] = 'index';
-                $this->execute($parts[0], $parts[1], $params);
+                return $this->execute($parts[0], $parts[1], $params);
             } else {
                 // use the route as a callback
-                $route($this, $params);
+                return $route($this, $params);
             }
         }
     }
@@ -891,18 +891,33 @@ interface IResponse extends IService
 
     /**
      * Sets the response code
+     * @param string $code
+     * @param string $message
+     * @return IResponse
      */
-    function setCode($code, $message);
+    public function setCode($code, $message);
+
+    /**
+     * Sets the response header
+     * @param string $attribute
+     * @param string $value
+     * @return IResponse
+     */
+    public function setHeader($attribute, $value);
 
     /**
      * Write a new line with the specified message
+     * @param string $message
+     * @return IResponse
      */
-    function writeLine($message);
+    public function writeLine($message);
 
     /**
      * Outputs the specified contents
+     * @param string $message
+     * @return IResponse
      */
-    function write($message);
+    public function write($message);
 }
 
 /**
