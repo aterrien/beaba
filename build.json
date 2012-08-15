@@ -18,7 +18,8 @@
         "${BEABA_PATH}/core/services/PluginManager.php",
         "${BEABA_PATH}/core/services/Response.php",
         "${BEABA_PATH}/core/services/Router.php",
-        "${BEABA_PATH}/core/services/View.php"
+        "${BEABA_PATH}/core/services/View.php",
+        "${BEABA_PATH}/core/services/Storage.php"
     ]
     ,"prefix"   : "core"
     ,"config"   : [
