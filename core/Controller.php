@@ -7,6 +7,17 @@ namespace beaba\core;
  */
 class Controller 
 {
+
+    const GET       = 'GET';
+    const POST      = 'POST';
+    const DELETE    = 'DELETE';
+    const PUT       = 'PUT';
+    const ALL       = '*';
+    const HTML      = 'HTML';
+    const JSON      = 'JSON';
+    const XML       = 'XML';
+    const RSS       = 'RSS';
+    
     protected $_app;
 
     /**
