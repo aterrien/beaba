@@ -1,5 +1,7 @@
 <?php
+
 namespace beaba\core;
+
 /**
  * This file is distributed under the MIT Open Source
  * License. See README.MD for details.
@@ -7,17 +9,19 @@ namespace beaba\core;
  */
 class Batch extends Application
 {
+
     /**
      * Initialize the batch mode
      * @param array $config 
      */
-    public function __construct( array $config = null ) {
-        parent::__construct( $config );
+    public function __construct(array $config = null)
+    {
+        parent::__construct($config);
         // the default batch header
         $this->getResponse()->writeLine(
-            'Command Line Tool for : ' . 
-            $this->getInfos()->getName() . 
-            ' - by ' . 
+            'Command Line Tool for : ' .
+            $this->getInfos()->getName() .
+            ' - by ' .
             $this->getInfos()->getConfig('author')
         );
         $this->getResponse()->writeLine(
@@ -31,8 +35,9 @@ class Batch extends Application
         );
         $this->getResponse()->writeLine(null);
         // clean the template output
-        $this->getView()->setTemplate('empty');        
+        $this->getView()->setTemplate('empty');
     }
+
     /**
      * Dispatching the specified request
      * @param string $url
@@ -43,7 +48,7 @@ class Batch extends Application
         try {
             parent::dispatch($url, $params);
             exit(0);
-        } catch( \Exception $ex ) {
+        } catch (\Exception $ex) {
             $this->_raise(
                 self::E_ERROR, array(
                 'request' => $url,
@@ -51,11 +56,12 @@ class Batch extends Application
                 'error' => $ex
                 )
             );
-            $this->getLogger()->error( "\n" . $ex->getMessage() );
-            $this->getLogger()->info( "\n" . $ex->getFile() . ' at ' . $ex->getLine() );
+            $this->getLogger()->error("\n" . $ex->getMessage());
+            $this->getLogger()->info("\n" . $ex->getFile() . ' at ' . $ex->getLine());
             $this->getResponse()->write("\n\n" . 'Program exit with a fatal error - CODE(1)' . "\n\n");
-            $this->getLogger()->warning( "\n" . $ex->getTraceAsString() );
+            $this->getLogger()->warning("\n" . $ex->getTraceAsString());
             exit(1);
         }
     }
+
 }
