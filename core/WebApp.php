@@ -27,11 +27,24 @@ class WebApp extends Application
             return $response;
         } elseif ( 
             isset( $response['view'] )
-            && isset( $response['data'] )
         ) {
-            return $this->getView()->push(
-                'contents', $response['view'], $response['data']
-            )->renderTemplate();
+            if ( isset( $response['template'] ) ) {
+                $this->getView()->setTemplate($response['template']);
+            }
+            if ( isset( $response['placeholders'] ) ) {
+                foreach($response['placeholders'] as $target => $widget) {
+                    $this->getView()->push(
+                        $target, 
+                        $widget['render'],
+                        isset($widget['data']) ? $widget['data'] : null
+                    );
+                }
+            }
+            return $this
+                ->getView()
+                ->setLayout($response['view'])
+                ->renderTemplate()
+            ;
         } else {
             throw new Exception(
                 'Unsupported response type', 501
