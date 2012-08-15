@@ -8,6 +8,7 @@ namespace beaba\core;
 class Controller 
 {
     protected $_app;
+
     /**
      * Initialize a new controller with the specified app
      * @param Application $app 
@@ -16,19 +17,20 @@ class Controller
     {
         $this->_app = $app;
     }
+
     /**
      * Executes the specified action
      * @param string $action
      * @param array $params 
      */
     public function execute( $action, $params ) 
-    {        
+    {
         if ( !is_callable( array( $this, $action ) ) ) {
             throw new Exception(
                 'Undefined action : ' . $action, 501
             );
         }
         $result = $this->$action( $params );
-        return $result;        
+        return $result;
     }
 }
