@@ -36,8 +36,12 @@ class WebApp extends atoum\test {
     }
     
     public function testDispatch() {
-        $this
+        $this->assert()->string(
+            $this
             ->test__construct()
-            ->dispatch();
+            ->dispatch(
+                'GET', '/', null, 'html'
+             )
+        )->isEqualTo('<h1>Hello world</h1>');
     }
 }
