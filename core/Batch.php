@@ -46,7 +46,7 @@ class Batch extends Application
     public function dispatch($url = null, array $params = null)
     {
         try {
-            parent::dispatch($url, $params);
+            parent::dispatch(null, $url, $params);
             exit(0);
         } catch (\Exception $ex) {
             $this->_raise(
