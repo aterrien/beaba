@@ -1,4 +1,7 @@
-<?php /* @var $app beaba\core\Application */ ?>
+<?php 
+    /* @var $app beaba\core\Application */ 
+    $layout =  $app->getView()->renderLayout();
+?>
 <!DOCTYPE html>
 <html>
     <head>
@@ -15,7 +18,14 @@
         </style>        
     </head>
     <body>
-        <?php echo $app->getView()->renderLayout(); ?>
+        <?php echo $app->getView()->render('menu'); ?>
+        <div class="container">        
+            <?php echo $layout; ?>
+            <hr />
+            <footer>
+                <?php echo $app->getView()->renderPlaceholder('footer'); ?>
+            </footer>            
+        </div>
         <?php foreach($app->getAssets()->getJs() as $js) { ?>
         <script type="text/javascript" src="<?php echo $js; ?>"></script>
         <?php } ?>        

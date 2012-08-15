@@ -1,15 +1,9 @@
 <?php /* @var $app beaba\core\Application */ ?>
-<?php echo $app->getView()->render('menu'); ?>
-<div class="container">
-    <!-- Main hero unit for a primary marketing message or call to action -->
-    <div class="hero-unit">
-        <?php echo $app->getView()->renderPlaceholder('top'); ?>
-    </div>
-    <div class="row">
-        <?php echo $app->getView()->renderPlaceholder('content'); ?>
-    </div>    
-    <hr />
-    <footer>
-        <?php echo $app->getView()->renderPlaceholder('footer'); ?>
-    </footer>
+
+<!-- Main hero unit for a primary marketing message or call to action -->
+<div class="hero-unit">
+    <?php echo $app->getView()->renderPlaceholder('top'); ?>
+</div>
+<div class="row">
+    <?php echo $app->getView()->renderPlaceholder('content'); ?>
 </div>
