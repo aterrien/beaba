@@ -32,13 +32,23 @@ return array(
     'bootstrap' => array(
         'js' => array(
             'main' => 
-            'http://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.0.4/bootstrap.min.js'
+            '/core/assets/bootstrap/js/bootstrap.js'
         ),
         'css' => array(
             'main' => 
-            'http://twitter.github.com/bootstrap/assets/css/bootstrap.css',
+            '/core/assets/bootstrap/css/bootstrap.css',
             'responsive' => 
-            'http://twitter.github.com/bootstrap/assets/css/bootstrap-responsive.css'
+            '/core/assets/bootstrap/css/bootstrap-responsive.css'
+        )
+    ),
+    'fort-awesome' => array(
+        'css' => array(
+            '/core/assets/fort-awesome/css/font-awesome.css'
+        )
+    ),
+    'theme' => array(
+        'css' => array(
+            'main' => '/apps/' . APP_NAME . '/theme/default.css'
         )
     )
 );
