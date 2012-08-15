@@ -55,22 +55,44 @@ if ( defined('BEABA_APP') && file_exists( BEABA_APP . '/build.php' ) ) {
  * An array merging helper
  * @params array $original
  * @params array $additionnal
+ * @params boolean $prepend
  * @return array
  */
-function merge_array( $original, $additionnal ) 
+function merge_array( $original, $additionnal, $prepend = false ) 
 {
     if ( empty($additionnal) ) return $original;
-    foreach($additionnal as $key => $value) {
-        if ( is_numeric( $key ) ) {
-            $original[] = $value;
-        } else {
-            $original[$key] = (
-                !empty($original[$key]) 
-                && is_array($value) 
-                && is_array($original[$key]) ?
-                merge_array($original[$key], $additionnal[$key]) : $value
-            );
+    if ( $prepend ) {
+        if ( empty($original) ) return $additionnal;
+        foreach($original as $key => $value) {
+            if ( is_numeric( $key ) ) {
+                $additionnal[] = $value;
+            } else {
+                if ( !empty($additionnal[$key]) ) {
+                    $additionnal[$key] = (
+                        is_array($additionnal[$key])
+                        && is_array($value) ?
+                        merge_array($value, $additionnal[$key], true) : 
+                        $additionnal[$key]
+                    );
+                } else {
+                    $additionnal[$key] = $value;
+                }
+            }
         }
+        return $additionnal;
+    } else {
+        foreach($additionnal as $key => $value) {
+            if ( is_numeric( $key ) ) {
+                $original[] = $value;
+            } else {
+                $original[$key] = (
+                    !empty($original[$key]) 
+                    && is_array($value) 
+                    && is_array($original[$key]) ?
+                    merge_array($original[$key], $value, false) : $value
+                );
+            }
+        }
+        return $original;
     }
-    return $original;
 }
