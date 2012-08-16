@@ -85,7 +85,11 @@ class BatchRequest extends core\Service implements core\IRequest
         if (is_null($this->_parameters)) {
             $this->_parameters = array();
             $options = $this->_app->config->getConfig('options');
-            if ($_SERVER['argv'][0] == $_SERVER['SCRIPT_NAME']) {
+            if ( empty($_SERVER['argv']) ) $_SERVER['argv'] = array();
+            if ( 
+                !empty($_SERVER['argv'][0]) && 
+                $_SERVER['argv'][0] == $_SERVER['SCRIPT_NAME']
+            ) {
                 array_shift($_SERVER['argv']);
             }
             //print_r($options);
