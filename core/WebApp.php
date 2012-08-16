@@ -85,7 +85,7 @@ class WebApp extends Application
      * @param string $method
      * @return mixed 
      */
-    public function processResponse($response, $method )
+    public function processResponse($response, $method, $format )
     {
         // EXECUTING THE RESPONSE
         if (!is_string($response)) {
@@ -166,7 +166,7 @@ class WebApp extends Application
             $response = parent::dispatch($method, $url, $params);
             $this->_raise(self::E_BEFORE_RENDER);
             $response = $this->renderResponse(
-                $this->processResponse($response, $method)
+                $this->processResponse($response, $method, $format)
                 , $format
             );
         } catch (\Exception $ex) {
