@@ -47,7 +47,7 @@ class WebApp extends Application
             ;
         } else {
             throw new Exception(
-                'Unsupported response type', 501
+                'Unsupported response type', 400
             );
         }
     }
@@ -112,8 +112,8 @@ class WebApp extends Application
                 } elseif (isset($response['*'])) {
                     $out = $response['*'];
                 } else {
-                    throw new Exception(
-                        'Unsuported method : ' . $method, 501
+                    throw new http\BadMethod(
+                        $this, array_keys($response)
                     );
                 }
                 // handle a callback
@@ -126,8 +126,8 @@ class WebApp extends Application
                 } elseif (isset($out['*'])) {
                     $out = $out['*'];
                 } else {
-                    throw new Exception(
-                        'Unsuported format : ' . $format, 501
+                    throw new http\BadFormat(
+                        $this, array_keys($out)
                     );
                 }
                 if ( is_callable( $out ) ) {
@@ -151,8 +151,8 @@ class WebApp extends Application
                     $response = $this->renderRss($response);
                     break;
                 default:
-                    throw new Exception(
-                        'Unsuported format type : ' . $format, 501
+                    throw new http\BadFormat(
+                        $this, array('html', 'json', 'xml', 'rss')
                     );
             }
         }
@@ -162,6 +162,7 @@ class WebApp extends Application
                 'response' => &$response
             )
         );
+        // flush the view instance
         unset($this->_services['view']);
         return $response;
     }
