@@ -22,6 +22,8 @@ class Exception extends \Exception
         401 => 'Unauthorized',
         403 => 'Forbidden',
         404 => 'Not found',
+        405 => 'Method Not Allowed',
+        406 => 'Not Acceptable',
         500 => 'Internal Error',
         501 => 'Not implemented'
     );    
