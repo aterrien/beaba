@@ -17,7 +17,7 @@ class View extends core\Service implements core\IView
     protected $_layout;
     protected $_placeholders = array();
     protected $_renderers = array();
-    protected $_flagRender = false;
+    protected $_flagInit = false;
 
     /**
      * Handle the assets loading
@@ -35,6 +35,7 @@ class View extends core\Service implements core\IView
      */
     public function setLayout($file)
     {
+        $this->_flagInit = false;
         $this->_layout = $file;
         return $this;
     }
@@ -44,6 +45,7 @@ class View extends core\Service implements core\IView
      */
     public function setTemplate($file)
     {
+        $this->_flagInit = false;
         $this->_template = $file;
         return $this;
     }
@@ -176,18 +178,52 @@ class View extends core\Service implements core\IView
     }
 
     /**
-     * Renders the current layout
-     * @return string
-     * @throws \LogicException
+     * Attaching a widget data
+     * @param string $zone
+     * @param string $widget
+     * @param string|callback $render
+     * @param array|callback $datasource
+     * @return IView
      */
-    public function renderLayout()
+    public function attach(
+        $zone, $widget, $render = null, $datasource = null
+    )
     {
-        if ($this->_flagRender) {
-            throw new \LogicException(
-                'The current layout was already rendered'
-            );
+        if (!isset($this->_placeholders[$zone])) {
+            $this->_placeholders[$zone] = array();
         }
-        $this->_flagRender = true;
+        if ( !isset($this->_placeholders[$zone][$widget]) ) {
+            $this->_placeholders[$zone][$widget] = array(
+                $render, $datasource
+            );
+        } else {
+            if ( !is_null($render) ) {
+                $this->_placeholders[$zone][$widget][0] = $render;
+            }
+            if ( !is_null($datasource) ) {
+                if ( 
+                    is_array($datasource) && 
+                    is_array($this->_placeholders[$zone][$widget][1])
+                ) {
+                    $this->_placeholders[$zone][$widget][1] = merge_array(
+                        $this->_placeholders[$zone][$widget][1],
+                        $datasource
+                    );
+                } else {
+                    $this->_placeholders[$zone][$widget][1] = $datasource;
+                }
+            }
+        }
+        return $this;
+    }
+    
+    /**
+     * Initialize the layout data
+     * @return IView 
+     */
+    public function initLayout() {
+        if ($this->_flagInit) return $this;
+        $this->_flagInit = true;
         if (!$this->_layout)
             $this->_layout = $this->_app->getInfos()->getLayout();
         // load the layout default configuration
@@ -197,20 +233,39 @@ class View extends core\Service implements core\IView
         );
         foreach ($this->_defaults as $zone => $widgets) {
             if ( is_array($widgets) ) {
-                foreach ($widgets as $widget) {
+                foreach ($widgets as $id => $widget) {
                     if (
                         !isset($widget['visible'])
                         || $widget['visible'] !== false
                     ) {
-                        $this->push(
-                            $zone, $widget['render'], empty($widget['data']) ? array() : $widget['data']
-                        );
+                        if ( is_numeric($id) ) {
+                            $this->push(
+                                $zone, $widget['render'], 
+                                empty($widget['data']) ? 
+                                array() : $widget['data']
+                            );
+                        } else {
+                            $this->attach(
+                                $zone, $id, 
+                                $widget['render'], 
+                                empty($widget['data']) ? 
+                                array() : $widget['data']
+                            );
+                        }
                     }
                 }
             }
         }
-        // renders the layout
-        return $this->render($this->_layout);
+        return $this;
+    }
+    
+    /**
+     * Renders the current layout
+     * @return string
+     */
+    public function renderLayout()
+    {
+        return $this->initLayout()->render($this->_layout);
     }
 
     /**
