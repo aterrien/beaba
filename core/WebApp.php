@@ -104,15 +104,17 @@ class WebApp extends Application
                 if (is_callable($out)) {
                     $out = $out();
                 }
-                // handle the response type
-                if (isset($out[$format])) {
-                    $out = $out[$format];
-                } elseif (isset($out['*'])) {
-                    $out = $out['*'];
-                } else {
-                    throw new http\BadFormat(
-                        $this, array_keys($out)
-                    );
+                if ( is_array($out) && !isset($out['view']) ) {
+                    // handle the response type
+                    if (isset($out[$format])) {
+                        $out = $out[$format];
+                    } elseif (isset($out['*'])) {
+                        $out = $out['*'];
+                    } else {
+                        throw new http\BadFormat(
+                            $this, array_keys($out)
+                        );
+                    }
                 }
                 if (is_callable($out)) {
                     $response = $out();
@@ -188,9 +190,39 @@ class WebApp extends Application
                     $this->getService('response')->setCode(
                         $ex->getCode(), $ex->getHttpMessage()
                     );
-                    $response = $this->renderResponse(
-                        $ex->getResponse(), $format
-                    );
+                    if ( $format === 'html' ) {
+                        $response = $this->renderResponse(
+                            $ex->getResponse(), $format
+                        );
+                    } else {
+                        if ( 
+                            $ex->getInnerException() 
+                            instanceof http\FormValidation 
+                        ){
+                            $ex = $ex->getInnerException();
+                            $errors = array();
+                            foreach($ex->getErrors() as $field => $title) {
+                                $errors[] = array(
+                                    'field' => $field,
+                                    'message' => $title
+                                );
+                            }
+                            $response = $this->renderResponse(
+                                array(
+                                    'errors' => $errors
+                                ), $format
+                            );
+                        } else {
+                            $response = $this->renderResponse(
+                                array(
+                                    'error' => array(
+                                        'title' => $ex->getMessage(),
+                                        'from' => $ex->getInnerException()->getMessage()
+                                    )
+                                ), $format
+                            );
+                        }
+                    }
                 } else {
                     $response = $this->renderResponse(
                         $this->execute(
