@@ -791,6 +791,12 @@ interface IView extends IService
     public function setLayout($file);
 
     /**
+     * Initialize the layout data
+     * @return IView 
+     */
+    public function initLayout();
+
+    /**
      * Sets the templating file
      * @return IView
      */
@@ -802,6 +808,18 @@ interface IView extends IService
      * @return IView
      */
     public function push($zone, $file, $datasource = null);
+
+    /**
+     * Attaching a widget data
+     * @param string $zone
+     * @param string $widget
+     * @param string|callback $render
+     * @param array|callback $datasource
+     * @return IView
+     */
+    public function attach(
+        $zone, $widget, $render = null, $datasource = null
+    );
 
     /**
      * Adds the specified data to the top of the specified
