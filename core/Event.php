@@ -33,7 +33,7 @@ class Event
         $class = get_class($this);
         $results = array();
         $events = $this->_app->config->getConfig(
-            'events/' . strtr($class, '\\', '/')
+            'events/' . strtr($class, '\\', '/'), false, true
         );
         if ( !empty($events[ $event ]) ) {
             foreach( 
