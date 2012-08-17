@@ -55,7 +55,7 @@ abstract class Application extends Event
     public function __construct(array $config = null)
     {
         // initialize the configuration layer
-        $this->config = new Configuration($config);
+        $this->config = new Configuration($this, $config);
         // initialize the event handler
         parent::__construct($this);
         // attach core default services : error manager + logger
