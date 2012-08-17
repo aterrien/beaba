@@ -1,16 +1,21 @@
-# beaba [![Build Status](https://secure.travis-ci.org/ichiriac/beaba.png?branch=master)](http://travis-ci.org/ichiriac/beaba)
+# Beaba MVC
+[![Build Status](https://secure.travis-ci.org/ichiriac/beaba.png?branch=master)](http://travis-ci.org/ichiriac/beaba)
 
+Beaba is a lightweight MVC framework written for `PHP 5.3+` taking advantages on best developpement practices :
 
-BEABA is a lightweight MVC framework written in PHP 5.3 :
+* 100% extensible & configurable
+* really `K.I.S.S` oriented
+* `S.O.L.I.D` respectfull  
+* light cook-book documentation
 
-- core is less than 1K LoC *nb1*
-- really K.I.S.S oriented
-- S.O.L.I.D respectfull  
-- 100% extensible & configurable
-- light cook-book documentation
+## Features
 
-*nb1 : 980 lines of code from building script (removes comments + format brackets to egyptian style) - exclude configuration scripts* 
-
+* REST-full compliant
+* Event driven extensions
+* 4 extensibility layers : local > application > plugins > core
+* Including a light assets management (ready to use with bootstrap css & fort-awesome)
+* Plugins management (automated deployement & upgrade)
+* Provides a light ActiveRecord model layer
 
 ## Example
 
@@ -43,15 +48,16 @@ $app->getResponse()->write( $app->dispatch() );
 A REST controller example :
 https://gist.github.com/3362502#file_beaba_sample_rest.php
 
+## Documentation & Cook-Book
+
 ## Install
 
-1. Install with composer the package : beaba/default :
+Install with composer the package : beaba/default :
 
-Make the path :
-    `$ mkdir -p /usr/local/beaba/public/www/ `
-
-Go the working dir :
-    `$ cd /usr/local/beaba/public/www/ `
+```bash
+$ mkdir -p /usr/local/beaba/public/www/
+$ cd /usr/local/beaba/public/www/
+```
 
 Create the composer.json file :
 ```json
@@ -63,9 +69,12 @@ Create the composer.json file :
 }
 ```
 
-    `$ composer.phar install `
+And install from composer :
+```bash
+$ composer.phar install
+```
 
-2. Create an apache vhost :
+Create an apache vhost :
 ```xml
 <VirtualHost *:80>
     ServerAdmin dev.beaba@localhost.dev
@@ -101,15 +110,16 @@ Create the composer.json file :
 </Directory>
 ```
 
-3. Add to the domain to /etc/hosts
-
-    `$ echo "127.0.0.1 beaba.localhost.dev" >> /etc/hosts`
+Add the testing domain to /etc/hosts
+```bash
+$ echo "127.0.0.1 beaba.localhost.dev" >> /etc/hosts
+```
 
 ## Documentation & Cook-Book
 
 It's in progress ...
 
-# MIT License
+## MIT License
 
 Copyright (C) <2012> <PHP Hacks Team : http://coderwall.com/team/php-hacks>
 
