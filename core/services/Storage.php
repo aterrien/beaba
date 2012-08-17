@@ -7,7 +7,7 @@ use \beaba\core;
  * License. See README.MD for details.
  * @author Ioan CHIRIAC
  */
-class Storaget extends core\Service implements core\IStoragePool
+class Storage extends core\Service implements core\IStoragePool
 {
 
     /**
@@ -18,7 +18,7 @@ class Storaget extends core\Service implements core\IStoragePool
     /**
      * @var array List of meta definitions
      */
-    protected $_metas = array();
+    protected $_models = array();
 
     /**
      * Gets a storage provider from its configuration key
@@ -71,30 +71,35 @@ class Storaget extends core\Service implements core\IStoragePool
     /**
      * Gets the specified meta structure
      * @param string $name
-     * @return IStorageMeta
+     * @return IModel
      */
-    public function getMeta($name)
+    public function getModel($name)
     {
-        if ( !isset( $this->_metas[$name] ) ) {
-            $conf = $this->_app->config->getConfig('metas');
+        if ( !isset( $this->_models[$name] ) ) {
+            $conf = $this->_app->config->getConfig('models');
             if ( empty($conf[ $name ]) ) {
                 throw new \OutOfBoundsException(
-                    'Undefined meta definition : ' . $name
+                    'Undefined model definition : ' . $name
                 );
             }
-            $this->_metas[ $name ] = $this->createMeta(
+            $this->_models[ $name ] = $this->createModel(
                 $conf[$name]
             );
         }
-        return $this->_metas[ $name ];
+        return $this->_models[ $name ];
     }
 
     /**
      * Create a meta structure
      * @param string $conf
-     * @return IStorageMeta
+     * @return IModel
      */
-    public function createMeta(array $conf) {
-        
+    public function createModel(array $conf) {
+        if ( !empty($conf['class'])) {
+            $class = $conf['class'];
+            return new $class( $this->_app, $conf );
+        } else {
+            return new \beaba\core\Model( $this->_app, $conf );
+        }
     }
 }
