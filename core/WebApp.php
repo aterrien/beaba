@@ -36,23 +36,18 @@ class WebApp extends Application
             if (isset($response['placeholders'])) {
                 $this->getView()->initLayout();
                 foreach ($response['placeholders'] as $target => $widgets) {
-                    foreach( $widgets as $id => $widget ) {
+                    foreach ($widgets as $id => $widget) {
                         if (is_numeric($id)) {
                             $this->getView()->push(
-                                $target, 
-                                empty($widget['render']) ?
-                                null : $widget['render'], 
-                                isset($widget['data']) ? 
-                                $widget['data'] : null
+                                $target, empty($widget['render']) ?
+                                    null : $widget['render'], isset($widget['data']) ?
+                                    $widget['data'] : null
                             );
                         } else {
                             $this->getView()->attach(
-                                $target, 
-                                $id,
-                                empty($widget['render']) ?
-                                null : $widget['render'], 
-                                isset($widget['data']) ? 
-                                $widget['data'] : null
+                                $target, $id, empty($widget['render']) ?
+                                    null : $widget['render'], isset($widget['data']) ?
+                                    $widget['data'] : null
                             );
                         }
                     }
@@ -80,12 +75,35 @@ class WebApp extends Application
     }
 
     /**
+     * Serialize the result as a xml
+     * @param mixed $response 
+     * @return string
+     */
+    public function renderXml($response)
+    {
+        $this->getResponse()->setHeader(
+            'Content-Type', 'text/xml'
+        );
+        if (is_string($response)) {
+            return '<response><![CDATA[' . $response . ']]></response>';
+        } elseif (is_array($response)) {
+            $return = '<response>';
+            foreach ($response as $key => $value) {
+                $return .= '<' . $key . '>' . $value . '</' . $key . '>';
+            }
+            return $return . '</response>';
+        } else {
+            return '<response />';
+        }
+    }
+
+    /**
      * Executes the response callbacks and returns it's result
      * @param string $response
      * @param string $method
      * @return mixed 
      */
-    public function processResponse($response, $method, $format )
+    public function processResponse($response, $method, $format)
     {
         // EXECUTING THE RESPONSE
         if (!is_string($response)) {
@@ -104,7 +122,7 @@ class WebApp extends Application
                 if (is_callable($out)) {
                     $out = $out();
                 }
-                if ( is_array($out) && !isset($out['view']) ) {
+                if (is_array($out) && !isset($out['view'])) {
                     // handle the response type
                     if (isset($out[$format])) {
                         $out = $out[$format];
@@ -157,7 +175,7 @@ class WebApp extends Application
      * @param array $params 
      */
     public function dispatch(
-        $method = null, $url = null, array $params = null, $format = null
+    $method = null, $url = null, array $params = null, $format = null
     )
     {
         if (is_null($method))
@@ -179,14 +197,14 @@ class WebApp extends Application
                 $this->getResponse()->setCode(
                     $ex->getCode(), $ex->getHttpMessage()
                 );
-                if ( $ex instanceof http\Redirect ) {
-                    if ( $format === 'json' ) {
+                if ($ex instanceof http\Redirect) {
+                    if ($format === 'json') {
                         $this->getResponse()->setCode(
                             200, 'OK'
                         );
                         $response = $this->renderResponse(
                             array(
-                                'redirect' => $ex->getUrl()
+                            'redirect' => $ex->getUrl()
                             ), $format
                         );
                     } else {
@@ -207,18 +225,18 @@ class WebApp extends Application
                     $this->getService('response')->setCode(
                         $ex->getCode(), $ex->getHttpMessage()
                     );
-                    if ( $format === 'html' ) {
+                    if ($format === 'html') {
                         $response = $this->renderResponse(
                             $ex->getResponse(), $format
                         );
                     } else {
-                        if ( 
-                            $ex->getInnerException() 
-                            instanceof http\FormValidation 
-                        ){
+                        if (
+                            $ex->getInnerException()
+                            instanceof http\FormValidation
+                        ) {
                             $ex = $ex->getInnerException();
                             $errors = array();
-                            foreach($ex->getErrors() as $field => $title) {
+                            foreach ($ex->getErrors() as $field => $title) {
                                 $errors[] = array(
                                     'field' => $field,
                                     'message' => $title
@@ -226,16 +244,16 @@ class WebApp extends Application
                             }
                             $response = $this->renderResponse(
                                 array(
-                                    'errors' => $errors
+                                'errors' => $errors
                                 ), $format
                             );
                         } else {
                             $response = $this->renderResponse(
                                 array(
-                                    'error' => array(
-                                        'title' => $ex->getMessage(),
-                                        'from' => $ex->getInnerException()->getMessage()
-                                    )
+                                'error' => array(
+                                    'title' => $ex->getMessage(),
+                                    'from' => $ex->getInnerException()->getMessage()
+                                )
                                 ), $format
                             );
                         }
