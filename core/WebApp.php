@@ -174,10 +174,27 @@ class WebApp extends Application
         } catch (\Exception $ex) {
             // general exception catch
             if ($ex instanceof Exception && !$ex->isHttpError()) {
-                $this->getService('response')->setCode(
+                // @todo decide what to show ?
+                $response = null;
+                $this->getResponse()->setCode(
                     $ex->getCode(), $ex->getHttpMessage()
                 );
-                // @todo decide what to show ?
+                if ( $ex instanceof http\Redirect ) {
+                    if ( $format === 'json' ) {
+                        $this->getResponse()->setCode(
+                            200, 'OK'
+                        );
+                        $response = $this->renderResponse(
+                            array(
+                                'redirect' => $ex->getUrl()
+                            ), $format
+                        );
+                    } else {
+                        $this->getResponse()->setHeader(
+                            'Location', $ex->getUrl()
+                        );
+                    }
+                }
             } else {
                 $this->_raise(
                     self::E_ERROR, array(
