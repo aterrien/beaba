@@ -117,7 +117,7 @@ abstract class Application extends Event
     {
         return $this
             ->getService('storage')
-            ->getMeta( $name )
+            ->getModel( $name )
         ;
     }
 
@@ -297,16 +297,16 @@ interface IStoragePool extends IService
     /**
      * Gets the specified meta structure
      * @param string $name
-     * @return IStorageMeta
+     * @return IModel
      */
-    function getMeta($name);
+    function getModel($name);
 
     /**
      * Create a meta structure
      * @param string $conf
-     * @return IStorageMeta
+     * @return IModel
      */
-    function createMeta(array $conf);
+    function createModel(array $conf);
 }
 
 /**
@@ -319,25 +319,25 @@ interface IStorageDriver extends IService
      * Create a select statement
      * @return IStorageRequest
      */
-    function select( IStorageMeta $target );
+    function select( IModel $target );
 
     /**
      * Create a select statement
      * @return IStorageRequest
      */
-    function delete( IStorageMeta $target, array $primaries );
+    function delete( IModel $target, array $primaries );
 
     /**
      * Inserts values and returns the created primary
      * @return integer
      */
-    function insert( IStorageMeta $target, array $values );
+    function insert( IModel $target, array $values );
 
     /**
      * Update the specified record with specified values
      * @return IStorageRequest
      */
-    function update( IStorageMeta $target, array $values, $primary );
+    function update( IModel $target, array $values, $primary );
 }
 
 /**
@@ -345,6 +345,18 @@ interface IStorageDriver extends IService
  */
 interface IStorageRequest extends \Iterator, \Countable
 {
+
+    /**
+     * The requested model
+     * @return IModel
+     */
+    public function getModel();
+
+    /**
+     * The storage instance
+     * @return IStorageDriver
+     */
+    public function getStorage();
 
     /**
      * @return IStorageRequest
@@ -411,7 +423,7 @@ interface IStorageRequest extends \Iterator, \Countable
     function hasResults();
 }
 
-interface IStorageMeta
+interface IModel
 {
 
     /**
@@ -419,6 +431,23 @@ interface IStorageMeta
      * @return string
      */
     function getName();
+
+    /**
+     * Gets the storage driver
+     * @return IStorageDriver
+     */
+    function getStorage();
+
+    /**
+     * Create a select request
+     * @return IStorageRequest
+     */
+    function select();
+
+    /**
+     * @return 
+     */
+    function create( array $data );
 
     /**
      * Gets the storage columns
