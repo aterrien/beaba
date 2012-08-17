@@ -29,11 +29,22 @@ class Configuration
     protected $_app = array();
 
     /**
+     * @var array Configuration from each plugin
+     */
+    protected $_plugins = array();
+
+    /**
+     * @var Application The parent application instance
+     */
+    protected $_parent;
+
+    /**
      * Initialize a configuration layer with specified data
      * @param array $config 
      */
-    public function __construct(array $config = null)
+    public function __construct( Application $parent, array $config = null)
     {
+        $this->_parent = $parent;
         if (is_array($config)) {
             $this->_local = $config;
         }
@@ -43,12 +54,19 @@ class Configuration
      * Gets the merged configuration from different sources
      * @param string $key 
      * @param boolean $prepend
+     * @param boolean $include_plugins
      * @return array
      */
-    public function getConfig($key, $prepend = false)
+    public function getConfig($key, $prepend = false, $include_plugins = false)
     {
         if (!isset($this->_config[$key])) {
             $this->_config[$key] = merge_array(
+                $include_plugins ?
+                merge_array(
+                    $this->getCoreConfig($key), 
+                    $this->getPluginsConfig($key),
+                    $prepend
+                ) :
                 $this->getCoreConfig($key), 
                 merge_array(
                     $this->getAppConfig($key), 
@@ -118,6 +136,37 @@ class Configuration
             ) ? $data : $this->_readFileConf(BEABA_PATH, $key);
         }
         return $this->_core[$key];
+    }
+
+    /**
+     * Gets the plugins configuration (only enabled ones)
+     * @param string $key 
+     * @return array
+     */
+    public function getPluginsConfig( $key ) {
+        if (!isset($this->_plugins[$key])) {
+            if (
+                BEABA_BUILD_CORE && 
+                $data = $this->_readCallbackConf('plugins', $key)
+            ) {
+                $this->_plugins[$key] = $data;
+            } else {
+                $data = array();
+                $plugins = $this->getConfig('plugins');
+                foreach( $plugins as $name => $conf ) {
+                    if ( !empty($conf['enabled']) ) {
+                        $data = merge_array(
+                            $data,
+                            $this->_readFileConf( 
+                                BEABA_PATH . '/plugins/' . $name , $key
+                            )
+                        );
+                    }
+                }
+                $this->_plugins[$key] = $data;
+            }
+        }
+        return $this->_plugins[$key];
     }
 
     /**
