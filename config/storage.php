@@ -5,7 +5,7 @@ return array(
     ),
     'pool' => array(
         'default' => array(
-            'driver' => 'myqsl',
+            'driver' => 'mysql',
             'options' => array(
                 'host'      => 'localhost',
                 'user'      => 'root',
