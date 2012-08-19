@@ -433,6 +433,12 @@ interface IModel
     function getName();
 
     /**
+     * Gets the primary key name
+     * @return string
+     */
+    public function getPrimary();
+
+    /**
      * Gets the storage driver
      * @return IStorageDriver
      */
