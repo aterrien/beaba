@@ -6,8 +6,10 @@
     ,"files"    : [
         "${BEABA_PATH}/core/Event.php",
         "${BEABA_PATH}/core/Application.php",
+        "${BEABA_PATH}/core/WebApp.php",
         "${BEABA_PATH}/core/Configuration.php",
         "${BEABA_PATH}/core/Controller.php",
+        "${BEABA_PATH}/core/Model.php",
         "${BEABA_PATH}/core/services/Assets.php",
         "${BEABA_PATH}/core/services/Cache.php",
         "${BEABA_PATH}/core/services/ErrorHandler.php",
