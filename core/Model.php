@@ -33,6 +33,16 @@ class Model implements IModel
     }
 
     /**
+     * Gets the primary key name
+     * @return string
+     */
+    public function getPrimary() {
+        return
+            empty($this->_config['primary']) ?
+            'id' : $this->_config['primary']
+        ;
+    }
+    /**
      * Gets the storage driver
      * @return IStorageDriver
      */
@@ -108,4 +118,14 @@ class ActiveRecord
         $this->_model = $model;
     }
 
+    /**
+     * Save the current record to the database
+     * @return ActiveRecord 
+     */
+    public function save() {
+        $this->_model->getStorage()->insert(
+            $this->_model, $this->_data
+        );
+        return $this;
+    }
 }
