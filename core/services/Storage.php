@@ -50,7 +50,7 @@ class Storage extends core\Service implements core\IStoragePool
     public function createDriver($driver, array $conf = null)
     {
         $conf = $this->_app->config->getConfig('storage');
-        if ( !isset( $conf['drivers'][$driver] ) ) {
+        if ( empty( $conf['drivers'][$driver] ) ) {
             throw new \OutOfBoundsException(
                 'Undefined driver : ' . $driver
             );
