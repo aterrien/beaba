@@ -20,8 +20,7 @@ class Model implements IModel
     }
 
     /**
-     * Gets the storage name
-     * @return string
+     * @inheritdoc
      */
     public function getName()
     {
@@ -33,18 +32,18 @@ class Model implements IModel
     }
 
     /**
-     * Gets the primary key name
-     * @return string
+     * @inheritdoc
      */
-    public function getPrimary() {
+    public function getPrimary()
+    {
         return
             empty($this->_config['primary']) ?
             'id' : $this->_config['primary']
         ;
     }
+
     /**
-     * Gets the storage driver
-     * @return IStorageDriver
+     * @inheritdoc
      */
     public function getStorage()
     {
@@ -54,8 +53,7 @@ class Model implements IModel
     }
 
     /**
-     * Create a select request
-     * @return IStorageRequest
+     * @inheritdoc
      */
     public function select()
     {
@@ -63,22 +61,20 @@ class Model implements IModel
     }
 
     /**
-     * Creates a new entity filled with specified data
-     * @return ActiveRecord
+     * @inheritdoc
      */
     public function create(array $data = null)
     {
-        if ( empty($this->_config['entity'])) {
-            return new ActiveRecord( $this, $data );
+        if (empty($this->_config['entity'])) {
+            return new ActiveRecord($this, $data);
         } else {
             $class = $this->_config['entity'];
-            return new $class( $this, $data );
+            return new $class($this, $data);
         }
     }
 
     /**
-     * Gets the storage columns
-     * @return array
+     * @inheritdoc
      */
     public function getColumns()
     {
@@ -86,8 +82,15 @@ class Model implements IModel
     }
 
     /**
-     * Gets the columns relations
-     * @return array
+     * @inheritdoc
+     */
+    public function hasColumn($name)
+    {
+        return isset($this->_config['columns'][$name]);
+    }
+
+    /**
+     * @inheritdoc
      */
     public function getRelations()
     {
@@ -112,6 +115,11 @@ class ActiveRecord
      */
     protected $_model;
 
+    /**
+     * Initialize a new record
+     * @param IModel $model
+     * @param array $data 
+     */
     public function __construct(IModel $model, array $data = null)
     {
         $this->_data = $data ? $data : array();
@@ -119,13 +127,69 @@ class ActiveRecord
     }
 
     /**
+     * Gets the specified column value
+     * @param string $column
+     * @return mixed
+     */
+    public function __get($column)
+    {
+        if (!$this->_model->hasColumn($column)) {
+            throw new \OutOfBoundsException(
+                'Undefined column name : ' . $column
+            );
+        }
+        return $this->_data[$column];
+    }
+
+    /**
+     * Sets the specified column value
+     * @param string $column
+     * @param mixed $value 
+     * @return ActiveRecord
+     */
+    public function __set($column, $value)
+    {
+        if (!$this->_model->hasColumn($column)) {
+            throw new \OutOfBoundsException(
+                'Undefined column name : ' . $column
+            );
+        }
+        $this->_data[$column] = $value;
+        return $this;
+    }
+
+    /**
+     * Calls a magic getter / setter for a column
+     * @param string $function
+     * @param array $args
+     * @return mixed
+     */
+    public function __call($function, $args)
+    {
+        $method = substr($function, 0, 3);
+        if ($method === 'get') {
+            return $this->__get(strtolower(substr($function, 3)));
+        } elseif ($method === 'set') {
+            return $this->__set(
+                    strtolower(substr($function, 3)), $args[0]
+            );
+        } else {
+            throw new \BadMethodCallException(
+                'Undefined method ' . $function
+            );
+        }
+    }
+
+    /**
      * Save the current record to the database
      * @return ActiveRecord 
      */
-    public function save() {
+    public function save()
+    {
         $this->_model->getStorage()->insert(
             $this->_model, $this->_data
         );
         return $this;
     }
+
 }

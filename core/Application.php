@@ -100,11 +100,11 @@ abstract class Application extends Event
      * @param string $name 
      * @return IStorageDriver
      */
-    public function getStorage( $name )
+    public function getStorage($name)
     {
         return $this
-            ->getService('storage')
-            ->getDriver( $name )
+                ->getService('storage')
+                ->getDriver($name)
         ;
     }
 
@@ -113,11 +113,11 @@ abstract class Application extends Event
      * @param string $name
      * @return IStorageMeta
      */
-    public function getModel( $name )
+    public function getModel($name)
     {
         return $this
-            ->getService('storage')
-            ->getModel( $name )
+                ->getService('storage')
+                ->getModel($name)
         ;
     }
 
@@ -189,11 +189,11 @@ abstract class Application extends Event
      * @param string $route
      * @param array $args 
      */
-    public function getUrl( $route, array $args = null ) 
+    public function getUrl($route, array $args = null)
     {
-        return 
-            $this->getRequest()->getBaseDir() . 
-            $this->getService('router')->getUrl( $route, $args )
+        return
+            $this->getRequest()->getBaseDir() .
+            $this->getService('router')->getUrl($route, $args)
         ;
     }
 
@@ -219,10 +219,9 @@ abstract class Application extends Event
     public function dispatch($method = null, $url = null, array $params = null)
     {
         $this->_raise(
-            self::E_DISPATCH,
-            array(
-                'request' => $url,
-                'params' => $params
+            self::E_DISPATCH, array(
+            'request' => $url,
+            'params' => $params
             )
         );
         if (!is_callable($url)) {
@@ -313,25 +312,25 @@ interface IStorageDriver extends IService
      * Create a select statement
      * @return IStorageRequest
      */
-    function select( IModel $target );
+    function select(IModel $target);
 
     /**
      * Create a select statement
      * @return IStorageRequest
      */
-    function delete( IModel $target, array $primaries );
+    function delete(IModel $target, array $primaries);
 
     /**
      * Inserts values and returns the created primary
      * @return integer
      */
-    function insert( IModel $target, array $values );
+    function insert(IModel $target, array $values);
 
     /**
      * Update the specified record with specified values
      * @return IStorageRequest
      */
-    function update( IModel $target, array $values, $primary );
+    function update(IModel $target, array $values, $primary);
 }
 
 /**
@@ -355,32 +354,32 @@ interface IStorageRequest extends \Iterator, \Countable
     /**
      * @return IStorageRequest
      */
-    function where( $operator = 'and' );
+    function where($operator = 'and');
 
     /**
      * @return IStorageRequest
      */
-    function join( $relation );
+    function join($relation);
 
     /**
      * @return IStorageRequest
      */
-    function isEquals( $field, $value );
+    function isEquals($field, $value);
 
     /**
      * @return IStorageRequest
      */
-    function isLike( $field, $value );
+    function isLike($field, $value);
 
     /**
      * @return IStorageRequest
      */
-    function isNull( $field );
+    function isNull($field);
 
     /**
      * @return IStorageRequest
      */
-    function isBetween( $field, $start, $end );
+    function isBetween($field, $start, $end);
 
     /**
      * @return IStorageRequest
@@ -390,25 +389,25 @@ interface IStorageRequest extends \Iterator, \Countable
     /**
      * @return IStorageRequest
      */
-    function sub( $operator = 'and');
+    function sub($operator = 'and');
 
     /**
      * Ascending ordering
      * @return IStorageRequest
      */
-    function orderAsc( $column );
+    function orderAsc($column);
 
     /**
      * Descending ordering
      * @return IStorageRequest
      */
-    function orderDesc( $column );
+    function orderDesc($column);
 
     /**
      * Limiting the recordset size
      * @return IStorageRequest
      */
-    function limit( $offset, $size );
+    function limit($offset, $size);
 
     /**
      * Check if the reader has results
@@ -424,7 +423,7 @@ interface IModel
      * Gets the storage name
      * @return string
      */
-    function getName();
+    public function getName();
 
     /**
      * Gets the primary key name
@@ -436,18 +435,18 @@ interface IModel
      * Gets the storage driver
      * @return IStorageDriver
      */
-    function getStorage();
+    public function getStorage();
 
     /**
      * Create a select request
      * @return IStorageRequest
      */
-    function select();
+    public function select();
 
     /**
      * @return 
      */
-    function create( array $data );
+    public function create(array $data);
 
     /**
      * Gets the storage columns
@@ -462,7 +461,14 @@ interface IModel
      * }
      * @return array
      */
-    function getColumns();
+    public function getColumns();
+
+    /**
+     * Check if the specified column is defined
+     * @param string $name
+     * @return boolean
+     */
+    public function hasColumn($name);
 
     /**
      * Gets the columns relations
@@ -476,7 +482,7 @@ interface IModel
      * }
      * @return array
      */
-    function getRelations();
+    public function getRelations();
 }
 
 /**
@@ -804,7 +810,7 @@ interface IRouter extends IService
      * @param string $route
      * @param array $args 
      */
-    public function getUrl( $route, array $args = null );
+    public function getUrl($route, array $args = null);
 }
 
 /**
@@ -847,7 +853,7 @@ interface IView extends IService
      * @return IView
      */
     public function attach(
-        $zone, $widget, $render = null, $datasource = null
+    $zone, $widget, $render = null, $datasource = null
     );
 
     /**
