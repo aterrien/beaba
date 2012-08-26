@@ -101,9 +101,11 @@ class WebApp extends Application
      * Executes the response callbacks and returns it's result
      * @param string $response
      * @param string $method
+     * @param string $format
+     * @param array $args
      * @return mixed 
      */
-    public function processResponse($response, $method, $format)
+    public function processResponse($response, $method, $format, array $args = null)
     {
         // EXECUTING THE RESPONSE
         if (!is_string($response)) {
@@ -120,7 +122,7 @@ class WebApp extends Application
                 }
                 // handle a callback
                 if (is_callable($out)) {
-                    $out = $out();
+                    $out = $out($this, $args);
                 }
                 if (is_array($out) && !isset($out['view'])) {
                     // handle the response type
@@ -135,7 +137,7 @@ class WebApp extends Application
                     }
                 }
                 if (is_callable($out)) {
-                    $response = $out();
+                    $response = $out($this, $args);
                 } else {
                     $response = $out;
                 }
@@ -186,7 +188,7 @@ class WebApp extends Application
             $response = parent::dispatch($method, $url, $params);
             $this->_raise(self::E_BEFORE_RENDER);
             $response = $this->renderResponse(
-                $this->processResponse($response, $method, $format)
+                $this->processResponse($response, $method, $format, $params)
                 , $format
             );
         } catch (\Exception $ex) {
