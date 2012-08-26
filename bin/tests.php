@@ -21,5 +21,6 @@ if ( file_exists(  __DIR__ . '/../mageekguy.atoum.phar' ) ) {
 require_once __DIR__ . '/../bootstrap.php';
 
 // DEFINE TESTS
+class_exists('beaba\tests\units\core\Model');
 class_exists('beaba\tests\units\core\WebApp');
 class_exists('beaba\tests\units\core\ArrayMerge');
