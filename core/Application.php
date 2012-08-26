@@ -218,12 +218,6 @@ abstract class Application extends Event
      */
     public function dispatch($method = null, $url = null, array $params = null)
     {
-        $params = $params ?
-            merge_array(
-                $this->getRequest()->getParameters(), $params
-            ) :
-            $this->getRequest()->getParameters()
-        ;
         $this->_raise(
             self::E_DISPATCH,
             array(

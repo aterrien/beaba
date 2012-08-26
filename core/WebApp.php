@@ -177,9 +177,16 @@ class WebApp extends Application
      * @param array $params 
      */
     public function dispatch(
-    $method = null, $url = null, array $params = null, $format = null
+        $method = null, $url = null, 
+        array $params = null, $format = null
     )
     {
+        $params = $params ?
+            merge_array(
+                $this->getRequest()->getParameters(), $params
+            ) :
+            $this->getRequest()->getParameters()
+        ;
         if (is_null($method))
             $method = $this->getRequest()->getMethod();
         if (is_null($format))
@@ -187,6 +194,7 @@ class WebApp extends Application
         try {
             $response = parent::dispatch($method, $url, $params);
             $this->_raise(self::E_BEFORE_RENDER);
+            
             $response = $this->renderResponse(
                 $this->processResponse($response, $method, $format, $params)
                 , $format
