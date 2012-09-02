@@ -1,7 +1,7 @@
 {
     "name": "beaba/core",
     "type": "beaba-core",
-    "version": "0.6.2",
+    "version": "0.6.4",
     "description": "SOLID & Lightweight PHP MVC framework",
     "keywords": ["micro","framework","mvc","lighweight"],
     "homepage": "http://ichiriac.github.com/beaba/",
