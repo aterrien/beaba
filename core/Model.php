@@ -55,9 +55,11 @@ class Model implements IModel
     /**
      * @inheritdoc
      */
-    public function select()
+    public function query($statement, array $parameters = null)
     {
-        return $this->getStorage()->select($this);
+        return $this->getStorage()->select(
+                $this, $statement, $parameters
+        );
     }
 
     /**
