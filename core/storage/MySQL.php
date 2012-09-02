@@ -7,7 +7,7 @@ namespace beaba\core\storage;
  * License. See README.MD for details.
  * @author Ioan CHIRIAC
  */
-class MySQL implements \beaba\core\IStorageDriver
+class MySQL extends \beaba\core\StorageDriver
 {
 
     /**
@@ -147,12 +147,16 @@ class MySQL implements \beaba\core\IStorageDriver
     }
 
     /**
-     * @inheritdoc
+     * Executes the specified sql statement and fetch the result
+     * @param array $statement
      */
-    public function select(\beaba\core\IModel $target)
+    public function query($statement)
     {
-        return new \beaba\core\StorageRequest(
-                $this, $target
+        $result = $this->_getDriver()->query($statement);
+                if ($result === false)
+            $this->_raiseDriverError();
+        return new MySQLStatement(
+            $result
         );
     }
 
@@ -225,4 +229,28 @@ class MySQL implements \beaba\core\IStorageDriver
         return $this;
     }
 
+}
+
+/**
+ * Defines the mysql resultset
+ */
+class MySQLStatement implements \beaba\core\IStorageStatement
+{
+    /**
+     * @var \mysqli_result
+     */
+    protected $_result;
+    /**
+     * Initialize a mysql resultset
+     * @param \mysqli_result $result 
+     */
+    public function __construct( \mysqli_result $result ) {
+        $this->_result = $result;
+    }
+    /**
+     * @return array
+     */
+    public function next() {
+        return $this->_result->fetch_assoc();
+    }
 }
