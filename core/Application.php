@@ -219,7 +219,8 @@ abstract class Application extends Event
     public function dispatch($method = null, $url = null, array $params = null)
     {
         $this->_raise(
-            self::E_DISPATCH, array(
+            self::E_DISPATCH,
+            array(
             'request' => $url,
             'params' => $params
             )
@@ -303,34 +304,57 @@ interface IStoragePool extends IService
 }
 
 /**
+ * Defines a storage statement reader
+ */
+interface IStorageStatement
+{
+
+    /**
+     * @return array
+     */
+    public function next();
+}
+
+/**
  * Defines a storage driver
  */
-interface IStorageDriver extends IService
+interface IStorageDriver
 {
 
     /**
      * Create a select statement
      * @return IStorageRequest
      */
-    function select(IModel $target);
+    public function select(
+    IModel $target, $statement, array $parameters = null
+    );
+
+    /**
+     * Executes the specified query and returns a statement reader
+     * @return IStorageStatement
+     */
+    public function query($command);
 
     /**
      * Create a select statement
      * @return IStorageRequest
+     * @throws StorageException
      */
-    function delete(IModel $target, array $primaries);
+    public function delete(IModel $target, array $primaries);
 
     /**
      * Inserts values and returns the created primary
      * @return integer
+     * @throws StorageException
      */
-    function insert(IModel $target, array $values);
+    public function insert(IModel $target, array $values);
 
     /**
      * Update the specified record with specified values
      * @return IStorageRequest
+     * @throws StorageException
      */
-    function update(IModel $target, array $values, $primary);
+    public function update(IModel $target, array $values, $primary);
 }
 
 /**
@@ -352,70 +376,20 @@ interface IStorageRequest extends \Iterator, \Countable
     public function getStorage();
 
     /**
-     * @return IStorageRequest
+     * @return mixed
      */
-    function where($operator = 'and');
-
-    /**
-     * @return IStorageRequest
-     */
-    function join($relation);
-
-    /**
-     * @return IStorageRequest
-     */
-    function isEquals($field, $value);
-
-    /**
-     * @return IStorageRequest
-     */
-    function isLike($field, $value);
-
-    /**
-     * @return IStorageRequest
-     */
-    function isNull($field);
-
-    /**
-     * @return IStorageRequest
-     */
-    function isBetween($field, $start, $end);
-
-    /**
-     * @return IStorageRequest
-     */
-    function not();
-
-    /**
-     * @return IStorageRequest
-     */
-    function sub($operator = 'and');
-
-    /**
-     * Ascending ordering
-     * @return IStorageRequest
-     */
-    function orderAsc($column);
-
-    /**
-     * Descending ordering
-     * @return IStorageRequest
-     */
-    function orderDesc($column);
-
-    /**
-     * Limiting the recordset size
-     * @return IStorageRequest
-     */
-    function limit($offset, $size);
+    public function first();
 
     /**
      * Check if the reader has results
-     * @returns boolean		 
+     * @returns boolean
      */
-    function hasResults();
+    public function hasResults();
 }
 
+/**
+ * Defines the default model structure
+ */
 interface IModel
 {
 
@@ -439,9 +413,11 @@ interface IModel
 
     /**
      * Create a select request
+     * @param string $statement
+     * @param array $parameters
      * @return IStorageRequest
      */
-    public function select();
+    public function query($statement, array $parameters = null);
 
     /**
      * @return 
@@ -496,7 +472,7 @@ interface ICachePool extends IService
      * @param string $name
      * @return ICacheDriver
      */
-    function get($name = null);
+    public function get($name = null);
 
     /**
      * Creates a cache instance for the specified driver
@@ -504,7 +480,7 @@ interface ICachePool extends IService
      * @param array $conf
      * @return ICacheDriver
      */
-    function create($driver, array $conf = null);
+    public function create($driver, array $conf = null);
 }
 
 /**
@@ -518,14 +494,14 @@ interface ICacheDriver extends IService
      * @param string $key
      * @return mixed
      */
-    function getValue($key);
+    public function getValue($key);
 
     /**
      * Get values from the specified keys
      * @param array $keys
      * @return array
      */
-    function getValues(array $keys);
+    public function getValues(array $keys);
 
     /**
      * Sets a value attached to the specified key
@@ -533,28 +509,28 @@ interface ICacheDriver extends IService
      * @param mixed $value
      * @return ICache
      */
-    function setValue($key, $value);
+    public function setValue($key, $value);
 
     /**
      * Set values attaches to specified indexes (keys)
      * @param array $values
      * @return ICache
      */
-    function setValues($values);
+    public function setValues($values);
 
     /**
      * Remove the specified key
      * @param string $key
      * @return ICache
      */
-    function unsetValue($key);
+    public function unsetValue($key);
 
     /**
      * Remove the specified keys
      * @param array $key
      * @return ICache
      */
-    function unsetValues($keys);
+    public function unsetValues($keys);
 }
 
 /**
@@ -1063,7 +1039,7 @@ class Service extends Event implements IService
      * Initialize the service
      * @param Application $app 
      */
-    public function __construct(Application $app)
+    final public function __construct(Application $app)
     {
         parent::__construct($app);
         $this->_onStart();
