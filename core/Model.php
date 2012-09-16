@@ -46,7 +46,7 @@ class Model implements IModel
         return
             empty($this->_config['database']) ?
             $this->_config['table'] :
-            $this->_config['database'] . $this->_config['table']
+            $this->_config['database'] . '.' . $this->_config['table']
         ;
     }
 
