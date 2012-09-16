@@ -90,6 +90,19 @@ class Model extends atoum\test {
             $entry->getName()
         )->isEqualTo( 'John321' );
     }
+    
+    /**
+     * Testing the save mechanism
+     */
+    public function testSave() {
+        $record = $this->getApp()->getModel('test')->create(array(
+            'rand' => rand(0, 1000),
+            'name' => 'John'
+        ));
+        $this->assert()->integer(
+            $record->save()->getId()
+        )->isGreaterThan(0);
+    }
 }
 
 /**
