@@ -28,7 +28,7 @@ namespace beaba\core {
      * 
      * 
      */
-    abstract class StorageRequest implements IStorageRequest
+    class StorageRequest implements IStorageRequest
     {
 
         /**
@@ -42,16 +42,35 @@ namespace beaba\core {
         protected $_model;
 
         /**
+         * @var Request
+         */
+        protected $_request;
+
+        /**
+         * @var IStorageStatement
+         */
+        protected $_reader;
+
+        /**
+         * @var The resultset size
+         */
+        protected $_count = false;
+
+        protected $_buffer;
+        
+        /**
          * Init the request
          * @param IStorageDriver $storage
-         * @param IModel $model 
+         * @param IModel $model
+         * @param array $statement
          */
         final public function __construct(
-        IStorageDriver $storage, IModel $model
+        IStorageDriver $storage, IModel $model, storage\Request $request
         )
         {
             $this->_storage = $storage;
             $this->_model = $model;
+            $this->_request = $request;
             $this->_init();
         }
 
@@ -61,6 +80,20 @@ namespace beaba\core {
         protected function _init()
         {
             
+        }
+
+        /**
+         * Gets the reader statement
+         * @return IStorageStatement
+         */
+        protected function _getReader()
+        {
+            if (!$this->_reader) {
+                $this->_reader = $this->_storage->query(
+                    $this->_request->getSql()
+                );
+            }
+            return $this->_reader;
         }
 
         /**
@@ -88,6 +121,65 @@ namespace beaba\core {
         public function hasResults()
         {
             return false; // @todo
+        }
+
+        
+        /**
+         * Count number to results in the current recordset
+         * @return integer
+         */
+        public function count()
+        {
+            if ($this->_count === false) {
+                $column = 'countResultSize';
+                $result = $this->_storage->query(
+                    $this->_request->setCount($column)->getSql()
+                );
+                $this->_request->removeColumn($column);
+                $result = $result->next();
+                $this->_count = (int) $result[$column];
+            }
+            return $this->_count;
+        }
+
+        /**
+         * Gets the first item
+         * @return mixed 
+         */
+        public function first() {
+            if ( !is_array($this->_buffer) ) {
+                if ( !$this->_reader ) {
+                    $this->_request->setLimit(0, 1);
+                }
+                $this->rewind();
+                $this->current();
+            }
+            return $this->_buffer[0];
+        }
+        
+        public function current()
+        {
+            // @todo
+        }
+
+        public function key()
+        {
+            // @todo
+        }
+
+        public function next()
+        {
+            // @todo
+        }
+
+        public function rewind()
+        {
+            // @todo
+        }
+
+        public function valid()
+        {
+            // @todo
         }
 
     }
@@ -121,15 +213,25 @@ namespace beaba\core {
             $request = $this->getParser()->read(
                 $statement
             );
+            $request->setModel( $target );
             if ($parameters) {
                 foreach ($parameters as $name => $value) {
                     $request->setParam($name, $value);
                 }
             }
-            print_r($request);
-            die();
+            return $this->createRequest($target, $request);
+        }
+
+        /**
+         * Creates a request object
+         * @param storage\Request $request 
+         */
+        protected function createRequest(
+        IModel $target, storage\Request $request
+        )
+        {
             return new \beaba\core\StorageRequest(
-                    $this, $target
+                    $this, $target, $request
             );
         }
 
@@ -740,26 +842,124 @@ namespace beaba\core\storage {
     class Request
     {
 
-        protected $request;
-        protected $params;
+        protected $_request;
+        protected $_params;
+        protected $_sql;
+        /**
+         * @var IModel
+         */
+        protected $_model;
 
         public function __construct($request, $params)
         {
-            $this->request = $request;
-            $this->params = $params;
+            $this->_request = $request;
+            $this->_params = $params;
         }
 
+        public function setModel( \beaba\core\IModel $model ) {
+            $this->_model = $model;
+            if ( empty($this->_request['-s']) ) {
+                $this->_request['-s'] = array('*');
+            }
+            if ( empty($this->_request['f']) ) {
+                $this->_request['f'] = array(
+                    $model->getIdentifier()
+                );
+            }
+        }
+        
         public function setParam($name, $value)
         {
-            if (!isset($this->params[$name])) {
+            if (!isset($this->_params[$name])) {
                 throw new \OutOfBoundsException(
                     'Undefined parameter : ' . $name
                 );
             }
-            $this->params[$name]->setValue($value);
+            $this->_params[$name]->setValue($value);
             return $this;
         }
 
-    }
+        /**
+         * Gets a function definition
+         * @param type $name
+         * @param array $args
+         * @return type 
+         */
+        public function getFunction( $name, array $args = null ) {
+            return array(
+                '?' => empty($args) ? array() : $args
+                ,'$' => $name
+            );
+        }
+        
+        /**
+         * Adds a count column
+         * @param string $alias 
+         * @return Request
+         */
+        public function setCount( $alias = 0 ) {
+            $this->_request['-s'] = array(
+                $alias => $this->getFunction(
+                    'count', array('*')
+                )
+            );
+            return $this;
+        }
+        
+        public function setLimit( $start, $size ) {
+            
+        }
+        /**
+         * Gets the SQL statement
+         * @return string
+         */
+        public function getSql()
+        {
+            print_r($this->_request);
+            $sql = 'SELECT ';
+            // SELECT FIELDS
+            foreach($this->_request['-s'] as $alias => $def) {
+                if ( is_array($def) ) {
+                    $sql .= $def['$'].'('.implode(',', $def['?']).')';
+                } else {
+                    $sql .= $def;
+                }
+                if ( !is_numeric($alias) ) {
+                    $sql .= ' as ' . $alias;
+                }
+                $sql .= ', ';
+            }
+            // FROM TABLES
+            $sql = rtrim($sql, ', ') . ' FROM ';
+            foreach($this->_request['f'] as $alias => $def) {
+                $sql .= $this->_model->getApplication()->getModel(
+                    $def
+                )->getName();
+                if ( !is_numeric($alias) ) {
+                    $sql .= ' as ' . $alias;
+                }
+                $sql .= ', ';
+            }
+            $sql = rtrim($sql, ', ');
+            // WHERE
+            $where = '';
+            foreach( $this->_request['w'] as $criteria ) {
+                if ( is_string($criteria) ) {
+                    $where .= ' ' . $criteria;
+                } elseif ( !empty($criteria['f']) ) {
+                    
+                }
+            }
+            if ( !empty($where) ) {
+                $sql .= ' WHERE ' . $where;
+            }
+            echo "\n------\n" . $sql . "\n-------\n";
+            /*if ( empty() ) {
+                
+            }*/
+            // @todo
+            return $sql;
+        }
 
+    }
 }
