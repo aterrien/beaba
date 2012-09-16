@@ -28,6 +28,7 @@ class Model extends atoum\test {
                         'class' => __NAMESPACE__ . '\TestMapper',
                         'entity' => __NAMESPACE__ . '\TestEntity',
                         'storage' => 'default',
+                        'database' => '__tests',
                         'table' => 'tests',
                         'columns' => array(
                             'when' => 'datetime',
@@ -39,6 +40,7 @@ class Model extends atoum\test {
                         )
                     ),
                     'unit' => array(
+                        'database' => '__tests',
                         'table' => 'units',
                         'columns' => array(
                             'name' => 'string:10'
@@ -49,6 +51,18 @@ class Model extends atoum\test {
                     )
                 )
             ));
+            $this->_app->getModel('test')->getStorage()->destroy(
+                $this->_app->getModel('test')
+            );
+            $this->_app->getModel('unit')->getStorage()->destroy(
+                $this->_app->getModel('unit')
+            );
+            $this->_app->getModel('test')->getStorage()->deploy(
+                $this->_app->getModel('test')
+            );
+            $this->_app->getModel('unit')->getStorage()->deploy(
+                $this->_app->getModel('unit')
+            );
         }
         return $this->_app;
     }
@@ -59,7 +73,7 @@ class Model extends atoum\test {
         $test = $this->getApp()->getModel('test');
         $this->assert()->string(
             $test->getName()
-        )->isEqualTo('tests');
+        )->isEqualTo('__tests.tests');
         $this->assert()->string(
             get_class($test)
         )->isEqualTo( __NAMESPACE__ . '\TestMapper' );
