@@ -121,7 +121,7 @@ class MySQL extends \beaba\core\StorageDriver
         } elseif (is_null($value)) {
             return 'null';
         } elseif (is_string($value)) {
-            return $this->_getDriver()->escape_string($value);
+            return '\''.$this->_getDriver()->escape_string($value).'\'';
         } else {
             throw new \BadMethodCallException(
                 'Could not serialize to SQL the specified value'
@@ -288,14 +288,6 @@ class MySQL extends \beaba\core\StorageDriver
         foreach($fks as $id => $fName) {
             $fields[] = 'KEY `fk' . $id . '` (' . $fName . ')';
         }
-        // print_r(  );
-        echo sprintf(
-            'CREATE TABLE %1$s ( %2$s ) %3$s',
-            $this->_escapeEntity($name),
-            implode(',', $fields),
-            implode(' ', $options)
-        );
-        
         $this->execute(
             sprintf(
                 'CREATE TABLE %1$s ( %2$s ) %3$s',
