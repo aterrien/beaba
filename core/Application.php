@@ -297,10 +297,11 @@ interface IStoragePool extends IService
 
     /**
      * Create a meta structure
-     * @param string $conf
+     * @param string $name
+     * @param array $conf
      * @return IModel
      */
-    function createModel(array $conf);
+    function createModel($name, array $conf);
 }
 
 /**
@@ -392,6 +393,18 @@ interface IStorageRequest extends \Iterator, \Countable
  */
 interface IModel
 {
+
+    /**
+     * Gets the model identifier (from application layer)
+     * @return string
+     */
+    public function getIdentifier();
+
+    /**
+     * Gets the current application layer
+     * @return Application
+     */
+    public function getApplication();
 
     /**
      * Gets the storage name
