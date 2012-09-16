@@ -81,7 +81,18 @@ class MySQL extends \beaba\core\StorageDriver
      */
     protected function _escapeEntity($name)
     {
-        return '`' . strtr($name, '`\\', '-_') . '`';
+        if (strpos($name, '.') !== false ) {
+            return 
+                '`' . 
+                str_replace(
+                    '.', '`.`', 
+                    strtr($name, '`\\', '-_')
+                ) 
+                . '`'
+            ;
+        } else {
+            return '`' . strtr($name, '`\\', '-_') . '`';
+        }
     }
 
     /**
@@ -153,10 +164,10 @@ class MySQL extends \beaba\core\StorageDriver
     public function query($statement)
     {
         $result = $this->_getDriver()->query($statement);
-                if ($result === false)
+        if ($result === false)
             $this->_raiseDriverError();
         return new MySQLStatement(
-            $result
+                $result
         );
     }
 
@@ -229,6 +240,159 @@ class MySQL extends \beaba\core\StorageDriver
         return $this;
     }
 
+    /**
+     * @inheritdoc
+     */
+    public function deploy(\beaba\core\IModel $target) {
+        $name = $target->getName();
+        if ( strpos($name, '.') !== false ) {
+            // ATTEMPT TO CREATE THE DATABASE
+            $dbName = explode('.', $name, 2);
+            $this->execute(
+                sprintf(
+                    'CREATE DATABASE IF NOT EXISTS %1$s',
+                    $this->_escapeEntity($dbName[0])
+                )
+            );
+        }
+        $options = array(
+            'ENGINE=InnoDB',
+            'DEFAULT CHARSET=utf8'
+        );
+        $primary = $this->_escapeEntity($target->getPrimary());
+        $fields = array(
+            $primary
+            . ' INT(10) UNSIGNED NOT NULL AUTO_INCREMENT'
+        );
+        foreach($target->getColumns() as $column => $config ) {
+            $fields[] = 
+                $this->_escapeEntity( 
+                    $this->getFieldName($column, $config)
+                ) 
+                . ' ' 
+                . $this->getFieldDef( $config )
+            ;
+        }
+        $fks = array();
+        foreach($target->getRelations() as $column => $config ) {
+            $config = $this->getRelationOptions($config);
+            if ( strtolower($config['type']) === 'foreign' ) {
+                $fName = $this->_escapeEntity( 
+                    $this->getFieldName($column, $config)
+                );
+                $fks[] = $fName;
+                $fields[] = $fName . ' INT(10) UNSIGNED NOT NULL';
+            }
+        }
+        $fields[] = 'PRIMARY KEY ('.$primary.')';
+        foreach($fks as $id => $fName) {
+            $fields[] = 'KEY `fk' . $id . '` (' . $fName . ')';
+        }
+        // print_r(  );
+        echo sprintf(
+            'CREATE TABLE %1$s ( %2$s ) %3$s',
+            $this->_escapeEntity($name),
+            implode(',', $fields),
+            implode(' ', $options)
+        );
+        
+        $this->execute(
+            sprintf(
+                'CREATE TABLE %1$s ( %2$s ) %3$s',
+                $this->_escapeEntity($name),
+                implode(',', $fields),
+                implode(' ', $options)
+            )
+        );
+        
+        return $this;
+    }
+
+    /**
+     * Gets a field name
+     * @param string|string $name
+     * @param array $options
+     * @return string 
+     */
+    protected function getFieldName( $name, $options ) {
+        if ( 
+            is_string($options) 
+            || empty($options['name'])
+        ) {
+            return $name;
+        } else {
+            return $options['name'];
+        }
+    }
+    
+    /**
+     * Gets a field options
+     * @param array|string $options
+     * @return array
+     */
+    protected function getRelationOptions( $options ) {
+        if ( is_string($options) ) {
+            $def = explode(':', $options);
+            $options = array(
+                'type' => $def[0],
+                'model' => empty($def[1]) ? null: $def[1]
+            );
+        }
+        return $options;
+    }
+    
+    /**
+     * Gets a field definition
+     * @param array|string $options 
+     * @return string
+     */
+    protected function getFieldDef( $options ) {
+        if ( is_string($options) ) {
+            $def = explode(':', $options);
+            $options = array(
+                'type' => $def[0],
+                'size' => empty($def[1]) ? null: $def[1]
+            );
+        }
+        switch( strtolower($options['type']) ) {
+            case 'string':
+            case 'varchar':
+            case 'char':
+                if ( empty($options['size']) ) $options['size'] = '255';
+                return 'VARCHAR(' . $options['size'] . ')';
+            case 'datetime':
+            case 'timestamp':
+            case 'time':
+            case 'date':
+                return 'TIMESTAMP';
+            case 'boolean':
+                return 'TINYINT UNSIGNED';
+            case 'integer':
+            case 'int':
+            case 'numeric':
+                return 'INT';
+            case 'float':
+                return 'FLOAT';
+            case 'double':
+                return 'DOUBLE';
+            default:
+                throw new \Exception(
+                    'Unhandled type'
+                );
+        }
+    }
+    /**
+     * @inheritdoc
+     */
+    public function destroy(\beaba\core\IModel $target) {
+        $this->execute(
+            sprintf(
+                'DROP TABLE IF EXISTS %1$s',
+                $this->_escapeEntity($target->getName())
+            )
+        );
+        return $this;
+    }
 }
 
 /**
@@ -236,21 +400,27 @@ class MySQL extends \beaba\core\StorageDriver
  */
 class MySQLStatement implements \beaba\core\IStorageStatement
 {
+
     /**
      * @var \mysqli_result
      */
     protected $_result;
+
     /**
      * Initialize a mysql resultset
      * @param \mysqli_result $result 
      */
-    public function __construct( \mysqli_result $result ) {
+    public function __construct(\mysqli_result $result)
+    {
         $this->_result = $result;
     }
+
     /**
      * @return array
      */
-    public function next() {
+    public function next()
+    {
         return $this->_result->fetch_assoc();
     }
+
 }
