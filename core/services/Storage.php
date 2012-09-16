@@ -83,7 +83,7 @@ class Storage extends core\Service implements core\IStoragePool
                 );
             }
             $this->_models[ $name ] = $this->createModel(
-                $conf[$name]
+                $name, $conf[$name]
             );
         }
         return $this->_models[ $name ];
@@ -94,12 +94,12 @@ class Storage extends core\Service implements core\IStoragePool
      * @param string $conf
      * @return IModel
      */
-    public function createModel(array $conf) {
+    public function createModel($name, array $conf) {
         if ( !empty($conf['class'])) {
             $class = $conf['class'];
-            return new $class( $this->_app, $conf );
+            return new $class( $name, $this->_app, $conf );
         } else {
-            return new \beaba\core\Model( $this->_app, $conf );
+            return new \beaba\core\Model( $name, $this->_app, $conf );
         }
     }
 }
