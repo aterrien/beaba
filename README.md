@@ -48,6 +48,10 @@ $app->getResponse()->write( $app->dispatch() );
 A REST controller example :
 https://gist.github.com/3362502#file_beaba_sample_rest.php
 
+An ActiveRecord example :
+https://gist.github.com/3362502#file_beaba_sample_rest.php
+
+
 ## Changelog
 
 ### 0.6.* beta - release comming soon
