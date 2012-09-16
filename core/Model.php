@@ -12,11 +12,30 @@ class Model implements IModel
 
     protected $_config;
     protected $_app;
+    protected $_identifier;
 
-    public function __construct(Application $app, $config)
+    final public function __construct($identifier, Application $app, $config)
     {
         $this->_config = $config;
         $this->_app = $app;
+        $this->_identifier = $identifier;
+    }
+
+    /**
+     * Gets the model identifier (from application layer)
+     * @return string
+     */
+    final public function getIdentifier()
+    {
+        return $this->_identifier;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    final public function getApplication()
+    {
+        return $this->_app;
     }
 
     /**
