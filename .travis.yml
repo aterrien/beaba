@@ -8,5 +8,5 @@ before_script:
   - curl -s http://getcomposer.org/installer | php -- --quiet
   - php composer.phar install
   - wget http://downloads.atoum.org/nightly/mageekguy.atoum.phar
-
+  - mysql -e 'create database __tests;'
 script: php ./bin/tests.php
