@@ -67,7 +67,8 @@ class Model implements IModel
     public function getStorage()
     {
         return $this->_app->getStorage(
-                $this->_config['storage']
+            empty($this->_config['storage']) ?
+            'default' : $this->_config['storage']
         );
     }
 
