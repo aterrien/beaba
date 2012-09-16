@@ -356,6 +356,20 @@ interface IStorageDriver
      * @throws StorageException
      */
     public function update(IModel $target, array $values, $primary);
+
+    /**
+     * Deploys the specified model (creates database or tables)
+     * @return IStorageRequest
+     * @throws StorageException
+     */
+    public function deploy(IModel $target);
+
+    /**
+     * Destroys the specified model (destroy table)
+     * @return IStorageRequest
+     * @throws StorageException
+     */
+    public function destroy(IModel $target);
 }
 
 /**
