@@ -51,18 +51,6 @@ class Model extends atoum\test {
                     )
                 )
             ));
-            $this->_app->getModel('test')->getStorage()->destroy(
-                $this->_app->getModel('test')
-            );
-            $this->_app->getModel('unit')->getStorage()->destroy(
-                $this->_app->getModel('unit')
-            );
-            $this->_app->getModel('test')->getStorage()->deploy(
-                $this->_app->getModel('test')
-            );
-            $this->_app->getModel('unit')->getStorage()->deploy(
-                $this->_app->getModel('unit')
-            );
         }
         return $this->_app;
     }
