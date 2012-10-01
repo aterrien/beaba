@@ -55,7 +55,7 @@ class WebApp extends Application
             }
             return $this->getView()->renderTemplate();
         } else {
-            throw new Exception(
+            throw new \Exception(
                 'Unsupported response type', 400
             );
         }
