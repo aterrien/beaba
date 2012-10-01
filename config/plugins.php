@@ -1,6 +1,9 @@
 <?php
 return array(
-    'speed-track' => array(
+    'xhprof' => array(
+        'enabled' => false
+    ),
+    'forp' => array(
         'enabled' => true
     )
 );

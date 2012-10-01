@@ -36,6 +36,16 @@ $app = new beaba\core\Batch(
             'install' => array(
                 'title'     => 'Installs a new plugin',
                 'handler'   => function( beaba\core\Application $app, &$params ) {
+                    if ( empty($params['install']) ) {
+                        throw new \LogicException(
+                            'Expected the plugin name to be installed'
+                        );
+                    }
+                    $package = new \beaba\core\Composer(
+                        $params['install']
+                    );
+                    
+                    print_r( $params );
                     throw new \BadFunctionCallException('Not implemented');
                 }
             ),

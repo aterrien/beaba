@@ -16,7 +16,9 @@ class Model implements IModel
     protected $_config;
     protected $_app;
     protected $_identifier;
-
+    protected $_instances;
+    protected $_lookup = array();
+    
     /**
      * Initialize a new model instance
      * @param string $identifier

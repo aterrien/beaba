@@ -915,7 +915,32 @@ namespace beaba\core\storage {
          */
         public function getSql()
         {
-            print_r($this->_request);
+            if ( !$this->_sql ) {
+                $reader = new RequestBuilder($this);
+                $this->_sql = $reader->__toString();
+            }
+            return $this->_sql;
+        }
+    }
+    
+    /**
+     * Defines a request builder class
+     */
+    class RequestBuilder {
+        protected $_request;
+        /**
+         * Initialize the request builder
+         * @param array $data 
+         */
+        public function __construct( Request $request ) {
+            $this->_request = $request;
+        }
+        
+        /**
+         * Gets a SELECT statement
+         * @return string
+         */
+        protected function _getSelect() {
             $sql = 'SELECT ';
             // SELECT FIELDS
             foreach($this->_request['-s'] as $alias => $def) {
@@ -953,13 +978,20 @@ namespace beaba\core\storage {
             if ( !empty($where) ) {
                 $sql .= ' WHERE ' . $where;
             }
-            echo "\n------\n" . $sql . "\n-------\n";
-            /*if ( empty() ) {
-                
-            }*/
-            // @todo
             return $sql;
         }
-
+        /**
+         * Gets the request SQL
+         * @return string
+         */
+        public function __toString() {
+            if ( !empty($this->_request['-s']) ) {
+                return $this->_getSelect();
+            } else {
+                throw new \Exception(
+                    'Unknown request type'
+                );
+            }
+        }
     }
 }
