@@ -1,0 +1,3 @@
+[submodule "assets/treetable"]
+	path = assets/treetable
+	url = https://github.com/ludo/jquery-treetable.git
