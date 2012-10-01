@@ -43,7 +43,7 @@ return array(
     ),
     'fort-awesome' => array(
         'css' => array(
-            '/core/assets/fort-awesome/css/font-awesome.css'
+            '/core/assets/font-awesome/css/font-awesome.css'
         )
     ),
     'theme' => array(
