@@ -44,6 +44,21 @@ class MySQL extends atoum\test
         return $this->_app;
     }
     
+    /**
+     * Testing the insertions
+     */
+    public function testInsert() {
+        $instance = $this->getApp()->getModel('test')->create(array(
+            'rand' => 123,
+            'when' => time(),
+            'name' => 'Test Insert'
+        ))->save();
+        echo $instance->getIdentifier();
+    }
+    
+    /**
+     * Testing the requests
+     */
     public function testRequest() {
         $result = $this->getApp()->getModel('test')->query(
             '
