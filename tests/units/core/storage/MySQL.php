@@ -29,6 +29,7 @@ class MySQL extends atoum\test
                     'test' => array(
                         'storage' => 'default',
                         'table' => 'tests',
+                        'database' => '__tests',
                         'columns' => array(
                             'when' => 'datetime',
                             'rand' => 'integer',
