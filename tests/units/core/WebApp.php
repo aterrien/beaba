@@ -6,12 +6,10 @@
  */
 namespace beaba\tests\units\core;
 
-use \mageekguy\atoum;
-require_once __DIR__ . '/../../../bootstrap.php';
 /**
  * Test class wrapper
  */
-class WebApp extends atoum\test {
+class WebApp extends \beaba\tests\Unit {
     public function test__construct() 
     {
         return new \beaba\core\WebApp(array(

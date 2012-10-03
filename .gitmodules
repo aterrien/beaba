@@ -9,4 +9,4 @@
 	url = https://github.com/FortAwesome/Font-Awesome.git
 [submodule "tests/lib"]
 	path = tests/lib
-	url = https://github.com/martinaglv/Testify.php.git
+	url = https://github.com/ichiriac/Testify.php.git

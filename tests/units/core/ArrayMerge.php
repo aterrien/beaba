@@ -6,13 +6,10 @@
  */
 namespace beaba\tests\units\core;
 
-use \mageekguy\atoum;
-require_once __DIR__ . '/../../../bootstrap.php';
-
 /**
  * Test class wrapper
  */
-class ArrayMerge extends atoum\test {
+class ArrayMerge extends \beaba\tests\Unit {
     public function testMain() 
     {
         $reader = new \beaba\core\ArrayMerge();
@@ -30,37 +27,30 @@ class ArrayMerge extends atoum\test {
                     'val4' => 'another merged value',
                 ), 4, 5
             ))->addFile(__DIR__ . '/merge_sample.php');
-        $this->assert()
-            ->array( 
-                eval(
-                    'return ' . $reader->__toString() . ';'
-                )
+        $result = eval(
+            'return ' . $reader->__toString() . ';'
+        );
+        $this->assert(
+            is_array(
+                $result
             )
-            ->isNotEmpty(
-                'The array should contains data'
-            )
-            ->hasKeys(
-                array(
-                    'key1', 'key2', 
-                    'dyna' . $_SERVER['SCRIPT_NAME']
-                ), 'Bad merge'
-            )
-            ->notContainsValues(
-                array('val\'ue','to-be-replaced'), 
-                'Bad merge'
-            )
-        ;
+        )->assert(
+            count($result) > 0
+        )->assert(
+            !empty($result['key1'])
+            && !empty($result['key2'])
+            && !empty($result['dyna' . $_SERVER['SCRIPT_NAME']])
+        )->assert(
+            !in_array('val\'ue', $result)
+            && !in_array('to-be-replaced', $result)
+        );
         $reader->addFile( __DIR__ . '/merge_extends.php' );
-        $this->assert()
-            ->array( 
-                eval(
-                    'return ' . $reader->__toString() . ';'
-                )
-            )
-            ->hasKeys(
-                array('header', 'footer'),
-                'All keys not found'
-            )
-        ;
+        $result = eval(
+            'return ' . $reader->__toString() . ';'
+        );
+        $this->assert(
+            !empty( $result['header'] )
+            && !empty( $result['footer'] )
+        );
     }
 }

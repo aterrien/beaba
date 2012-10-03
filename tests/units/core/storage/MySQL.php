@@ -7,14 +7,11 @@
  */
 namespace beaba\tests\units\core\storage;
 
-use \mageekguy\atoum;
-require_once __DIR__ . '/../../../../bootstrap.php';
-class_exists('beaba\core\Application');
-class_exists('beaba\core\Model');
+
 /**
  * Test class wrapper
  */
-class MySQL extends atoum\test
+class MySQL extends \beaba\tests\Unit
 {
     private $_app;
     
