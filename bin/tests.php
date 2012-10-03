@@ -6,22 +6,60 @@
  * @author Ioan CHIRIAC
  */
 
-// INCLUDE ATOUM BOOTSTRAP
-if ( file_exists(  __DIR__ . '/../mageekguy.atoum.phar' ) ) {
-    require_once __DIR__ . '/../mageekguy.atoum.phar';
-} else {
-    if (getenv('PHPBIN') === false) {
-        set_include_path( $_SERVER['Path'] );
-        putenv('PHPBIN=' . stream_resolve_include_path( 'php.exe' ) );
+// DEFINES APPLICATION PATH
+defined('BEABA_PATH') OR define(
+        'BEABA_PATH', !empty($_SERVER['BEABA_PATH']) ?
+            $_SERVER['BEABA_PATH'] :
+            '..'
+);
+require_once BEABA_PATH . '/bootstrap.php';
+require_once BEABA_PATH . '/tests/lib/testify/testify.class.php';
+// CONFIGURE THE SCRIPT
+$app = new beaba\core\Batch(
+    array(
+        'infos' => array(
+            'name' => 'beabaTester',
+            'title' => 'Beaba Tests Script',
+            'description' => 'Use this script to test beaba applications',
+            'author' => 'I.CHIRIAC'
+        ),
+        'options' => array(
+            'classes' => array(
+                'title'     => 'List of files to be tested',
+                'type'      => 'array',
+                'alias'     => 'c',
+                'required'  => true
+            ),
+            'plugins' => array(
+                'title' => 'Include plugins tests',
+                'type' => 'flag',
+                'alias' => 'p',
+                'default' => false
+            ),
+        )
+    )
+);
+
+// RUN THE SCRIPT
+$app->dispatch(
+    function( beaba\core\Batch $app, $args ) {
+        foreach( $args['classes'] as $class ) {
+            // init test
+            $tests = new Testify($class);
+            $instance = new $class($tests);
+            // find functions to be tested
+            $lookup = new ReflectionClass($instance);
+            $methods = $lookup->getMethods(ReflectionMethod::IS_PUBLIC);
+            foreach($methods as $method) {
+                if ( substr($method->getName(), 0, 4) === 'test') {
+                    $tests->test(
+                        $method->getName(). '()',
+                        array( $instance, $method->getName() )
+                    );
+                }
+            }
+            // run the test
+            $tests->run();
+        }
     }
-    require_once __DIR__ . '/../vendor/mageekguy/atoum/scripts/runner.php';
-}
-
-// INCLUDE BEABA BOOTSTRAP
-require_once __DIR__ . '/../bootstrap.php';
-
-// DEFINE TESTS
-//class_exists('beaba\tests\units\core\ArrayMerge');
-//class_exists('beaba\tests\units\core\WebApp');
-//class_exists('beaba\tests\units\core\Model');
-class_exists('beaba\tests\units\core\storage\MySQL');
+);
