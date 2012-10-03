@@ -1063,7 +1063,7 @@ interface IErrorHandler
     /**
      * Catch the specified exception
      */
-    function catchException(\Exception $ex);
+    function raise(\Exception $ex);
 }
 
 /**
