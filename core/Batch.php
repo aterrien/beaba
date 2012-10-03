@@ -47,20 +47,18 @@ class Batch extends Application
     {
         $params = $this->_loadParameters($params);
         try {
-            parent::dispatch(null, $url, $params);
+            parent::dispatch(null, $method, $params);
             exit(0);
         } catch (\Exception $ex) {
             $this->_raise(
                 self::E_ERROR, array(
-                'request' => $url,
+                'request' => '{batch-main}',
                 'params' => $params,
                 'error' => $ex
                 )
             );
-            $this->getLogger()->error("\n" . $ex->getMessage());
-            $this->getLogger()->info("\n" . $ex->getFile() . ' at ' . $ex->getLine());
+            $this->getService('errors')->raise($ex);
             $this->getResponse()->write("\n\n" . 'Program exit with a fatal error - CODE(1)' . "\n\n");
-            $this->getLogger()->warning("\n" . $ex->getTraceAsString());
             exit(1);
         }
     }
