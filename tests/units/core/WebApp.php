@@ -37,12 +37,14 @@ class WebApp extends \beaba\tests\Unit {
     }
     
     public function testDispatch() {
-        $this->assert()->string(
+        $this->assertEqual(
             $this
-            ->test__construct()
-            ->dispatch(
-                'GET', '/', null, 'html'
-             )
-        )->isEqualTo('<h1>Hello world</h1>');
+                ->test__construct()
+                ->dispatch(
+                    'GET', '/', null, 'html'
+                )
+            ,
+            '<h1>Hello world</h1>'
+        );
     }
 }

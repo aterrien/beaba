@@ -56,12 +56,14 @@ class Model extends \beaba\tests\Unit {
      */
     public function testModel() {
         $test = $this->getApp()->getModel('test');
-        $this->assert()->string(
-            $test->getName()
-        )->isEqualTo('__tests.tests');
-        $this->assert()->string(
-            get_class($test)
-        )->isEqualTo( __NAMESPACE__ . '\TestMapper' );
+        $this->assertEqual(
+            $test->getName(), 
+            '__tests.tests'
+        );
+        $this->assertEqual(
+            get_class($test),
+            __NAMESPACE__ . '\TestMapper'
+        );
     }
     
     /**
@@ -73,21 +75,24 @@ class Model extends \beaba\tests\Unit {
             'name' => 'John'
         ));
         // test the class helper
-        $this->assert()->string(
-            get_class($entry)
-        )->isEqualTo( __NAMESPACE__ . '\TestEntity' );
+        $this->assertEqual(
+            get_class($entry),
+            __NAMESPACE__ . '\TestEntity'
+        );
         // test setter
         $entry->name = 'John123';
         // test getter
-        $this->assert()->string(
-            $entry->name
-        )->isEqualTo( 'John123' );
+        $this->assertEqual(
+            $entry->name,
+            'John123'
+        );
         // test setter
         $entry->setName('John321');
         // test getter
-        $this->assert()->string(
-            $entry->getName()
-        )->isEqualTo( 'John321' );
+        $this->assertEqual(
+            $entry->getName(),
+            'John321'
+        );
     }
     
     /**
@@ -98,9 +103,9 @@ class Model extends \beaba\tests\Unit {
             'rand' => rand(0, 1000),
             'name' => 'John'
         ));
-        $this->assert()->integer(
-            $record->save()->getId()
-        )->isGreaterThan(0);
+        $this->assert(
+            $record->save()->getId() > 0
+        );
     }
 }
 
