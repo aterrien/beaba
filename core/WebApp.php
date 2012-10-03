@@ -181,12 +181,7 @@ class WebApp extends Application
         array $params = null, $format = null
     )
     {
-        $params = $params ?
-            merge_array(
-                $this->getRequest()->getParameters(), $params
-            ) :
-            $this->getRequest()->getParameters()
-        ;
+        $params = $this->_loadParameters($params);
         if (is_null($method))
             $method = $this->getRequest()->getMethod();
         if (is_null($format))

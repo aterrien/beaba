@@ -211,6 +211,20 @@ abstract class Application extends Event
     }
 
     /**
+     * Retrieve a list of current request parameters
+     * @param array $params
+     * @return array
+     */
+    protected function _loadParameters(array $params = null) 
+    {
+        return $params ?
+            merge_array(
+                $this->getRequest()->getParameters(), $params
+            ) :
+            $this->getRequest()->getParameters()
+        ;
+    }
+    /**
      * Dispatching the specified request
      * @param string $url
      * @param array $params 

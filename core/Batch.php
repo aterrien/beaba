@@ -45,6 +45,7 @@ class Batch extends Application
      */
     public function dispatch($url = null, array $params = null)
     {
+        $params = $this->_loadParameters($params);
         try {
             parent::dispatch(null, $url, $params);
             exit(0);
