@@ -6,4 +6,5 @@ php:
 
 before_script:
   - mysql < ./tests/mysql.sql
-script: php ./bin/tests.php
+
+script: php ./bin/tests.php -i tests.json

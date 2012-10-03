@@ -10,7 +10,7 @@
 defined('BEABA_PATH') OR define(
         'BEABA_PATH', !empty($_SERVER['BEABA_PATH']) ?
             $_SERVER['BEABA_PATH'] :
-            '..'
+            __DIR__ . '/..'
 );
 require_once BEABA_PATH . '/bootstrap.php';
 require_once BEABA_PATH . '/tests/tools/testify/testify.class.php';
