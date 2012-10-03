@@ -13,9 +13,6 @@ class WebApp extends \beaba\tests\Unit {
     public function test__construct() 
     {
         return new \beaba\core\WebApp(array(
-            'services' => array(
-                'request' => 'beaba\\core\\services\\HttpRequest'
-            ),
             'routes' => array(
                 // start routes injections
                 'index' => array(
