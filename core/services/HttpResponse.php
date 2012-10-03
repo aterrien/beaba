@@ -9,7 +9,7 @@ use \beaba\core;
  * License. See README.MD for details.
  * @author Ioan CHIRIAC
  */
-class Response extends core\Service implements core\IResponse
+class HttpResponse extends core\Service implements core\IResponse
 {
 
     public function setCode($code, $message)

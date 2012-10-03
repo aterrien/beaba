@@ -4,7 +4,9 @@
  */
 return array(
     'router'    => 'beaba\\core\\services\\Router',
-    'response'  => 'beaba\\core\\services\\Response',
+    'response'  => PHP_SAPI === 'cli' ? 
+    'beaba\\core\\services\\BatchResponse':
+    'beaba\\core\\services\\HttpResponse',
     'request'   => PHP_SAPI === 'cli' ? 
         'beaba\\core\\services\\BatchRequest' :
         'beaba\\core\\services\\HttpRequest'
