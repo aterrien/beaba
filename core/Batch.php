@@ -40,10 +40,10 @@ class Batch extends Application
 
     /**
      * Dispatching the specified request
-     * @param string $url
+     * @param string $method
      * @param array $params 
      */
-    public function dispatch($url = null, array $params = null)
+    public function run($method = null, array $params = null)
     {
         $params = $this->_loadParameters($params);
         try {

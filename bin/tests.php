@@ -41,7 +41,7 @@ $app = new beaba\core\Batch(
 );
 
 // RUN THE SCRIPT
-$app->dispatch(
+$app->run(
     function( beaba\core\Batch $app, $args ) {
         foreach( $args['classes'] as $class ) {
             // init test

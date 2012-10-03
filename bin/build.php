@@ -69,7 +69,7 @@ $app = new beaba\core\Batch(
     )
 );
 // RUN THE SCRIPT
-$app->dispatch(
+$app->run(
     function( beaba\core\Batch $app, $args ) {
         $out = $app->getResponse();
         $f = fopen($args['target'] . '.tmp', 'w+');
