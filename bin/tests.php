@@ -13,7 +13,7 @@ defined('BEABA_PATH') OR define(
             '..'
 );
 require_once BEABA_PATH . '/bootstrap.php';
-require_once BEABA_PATH . '/tests/lib/testify/testify.class.php';
+require_once BEABA_PATH . '/tests/tools/testify/testify.class.php';
 // CONFIGURE THE SCRIPT
 $app = new beaba\core\Batch(
     array(
