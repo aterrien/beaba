@@ -1,0 +1,8 @@
+{
+    "classes": [
+        "beaba\\tests\\units\\core\\ArrayMerge"
+        ,"beaba\\tests\\units\\core\\WebApp"
+        ,"beaba\\tests\\units\\core\\Model"
+        ,"beaba\\tests\\units\\core\\storage\\MySQL"
+    ]
+}

@@ -1,0 +1,11 @@
+/.project
+/.buildpath
+/nbproject
+/.settings
+/framework/build.php
+/framework/*.tmp
+/framework/*.old
+/build.php.old
+/build.php
+/composer.lock
+/vendor
