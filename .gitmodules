@@ -1,0 +1,12 @@
+[submodule "assets/treetable"]
+	path = assets/treetable
+	url = https://github.com/ludo/jquery-treetable.git
+[submodule "assets/bootstrap"]
+	path = assets/bootstrap
+	url = https://github.com/ichiriac/bootstrap-assets.git
+[submodule "assets/font-awesome"]
+	path = assets/font-awesome
+	url = https://github.com/FortAwesome/Font-Awesome.git
+[submodule "tests/tools"]
+	path = tests/tools
+	url = https://github.com/ichiriac/Testify.php.git
